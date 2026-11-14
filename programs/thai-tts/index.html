@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>อ่านออกเสียงภาษาไทย</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f5f1; --card:#ffffff; --ink:#1d1d1f; --muted:#6b6b70; --line:#e3e1da;
+    --accent:#2f4bff; --accent-ink:#fff; --hl:#fff2a8;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#141416; --card:#1e1e22; --ink:#ececf0; --muted:#9a9aa2; --line:#2e2e34; --accent:#6f83ff; --hl:#5a4d00; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Sarabun',system-ui,sans-serif;font-size:17px;line-height:1.6}
+  .wrap{max-width:860px;margin:0 auto;padding:28px 18px 60px}
+  h1{font-size:26px;margin:0 0 4px;font-weight:700}
+  .sub{color:var(--muted);margin:0 0 20px;font-size:15px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+  textarea{width:100%;min-height:240px;resize:vertical;border:1px solid var(--line);border-radius:10px;padding:14px;font:inherit;background:transparent;color:inherit}
+  textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+  .reader{display:none;min-height:240px;max-height:60vh;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:14px;white-space:pre-wrap}
+  .reader span.cur{background:var(--hl);border-radius:4px}
+  .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:14px}
+  .ctrl{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--muted);min-width:150px;flex:1}
+  select,input[type=range]{width:100%}
+  select{font:inherit;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+  button{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px 18px;border-radius:999px;cursor:pointer}
+  button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);min-width:130px}
+  button:disabled{opacity:.45;cursor:default}
+  .meta{display:flex;justify-content:space-between;color:var(--muted);font-size:14px;margin-top:8px;gap:10px;flex-wrap:wrap}
+  .warn{margin-top:14px;padding:12px 14px;border-radius:10px;background:rgba(255,170,0,.12);border:1px solid rgba(255,170,0,.35);font-size:15px;display:none}
+  .file{font-size:14px;color:var(--muted)}
+  .progress{height:4px;background:var(--line);border-radius:4px;margin-top:12px;overflow:hidden}
+  .progress>div{height:100%;width:0;background:var(--accent);transition:width .2s}
+</style>
+</head>
+<body><a href="../../" style="position:fixed;top:10px;right:10px;z-index:999;background:#0b1020cc;color:#5eead4;border:1px solid #22304f;border-radius:99px;padding:5px 12px;font:13px sans-serif;text-decoration:none">← JK Pandora</a>
+<div class="wrap">
+  <h1>อ่านออกเสียงภาษาไทย</h1>
+  <p class="sub">วางข้อความ เลือกเสียง แล้วกด “อ่าน” — ใช้เสียงที่มีในเครื่อง/เบราว์เซอร์ของคุณ ไม่ต้องล็อกอิน</p>
+
+  <div class="card">
+    <textarea id="txt" placeholder="วางหรือพิมพ์ข้อความภาษาไทยที่นี่..."></textarea>
+    <div id="reader" class="reader" aria-live="off"></div>
+    <div class="meta">
+      <span id="count">0 ตัวอักษร</span>
+      <label class="file">เปิดไฟล์ .txt: <input type="file" id="file" accept=".txt,text/plain"></label>
+    </div>
+    <div class="progress"><div id="bar"></div></div>
+
+    <div class="row">
+      <div class="ctrl">เสียง
+        <select id="voice"></select>
+      </div>
+      <div class="ctrl">ความเร็ว: <b id="rateV">1.0×</b>
+        <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1">
+      </div>
+      <div class="ctrl">ระดับเสียง: <b id="pitchV">1.0</b>
+        <input type="range" id="pitch" min="0.5" max="1.5" step="0.1" value="1">
+      </div>
+    </div>
+
+    <div class="row">
+      <button class="primary" id="play">▶ อ่าน</button>
+      <button id="stop" disabled>■ หยุด</button>
+      <button id="clear">ล้างข้อความ</button>
+    </div>
+
+    <div class="warn" id="warn"></div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const synth = window.speechSynthesis;
+const txt=$('txt'), reader=$('reader'), voiceSel=$('voice'), rate=$('rate'), pitch=$('pitch');
+const playBtn=$('play'), stopBtn=$('stop'), warn=$('warn'), bar=$('bar');
+let voices=[], chunks=[], idx=0, state='idle'; // idle | playing | paused
+
+function store(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
+
+function showWarn(html){warn.innerHTML=html;warn.style.display='block'}
+
+if(!synth){
+  showWarn('เบราว์เซอร์นี้ไม่รองรับการอ่านออกเสียง ลองเปิดด้วย Microsoft Edge หรือ Google Chrome');
+  playBtn.disabled=true;
+}
+
+function loadVoices(){
+  if(!synth) return;
+  voices = synth.getVoices();
+  const th = voices.filter(v=>/^th/i.test(v.lang));
+  const others = voices.filter(v=>!/^th/i.test(v.lang));
+  // Prefer natural/online Thai voices first
+  th.sort((a,b)=>(/natural|online/i.test(b.name)) - (/natural|online/i.test(a.name)));
+  voiceSel.innerHTML='';
+  const add=(list,label)=>{
+    if(!list.length) return;
+    const g=document.createElement('optgroup'); g.label=label;
+    list.forEach(v=>{const o=document.createElement('option');o.value=v.name;o.textContent=`${v.name} (${v.lang})`;g.appendChild(o)});
+    voiceSel.appendChild(g);
+  };
+  add(th,'ภาษาไทย'); add(others,'ภาษาอื่น');
+  const saved=load('tr_voice');
+  if(saved && voices.some(v=>v.name===saved)) voiceSel.value=saved;
+  else if(th.length) voiceSel.value=th[0].name;
+  if(!th.length && voices.length){
+    showWarn('ยังไม่พบเสียงภาษาไทยในเครื่องนี้ — แนะนำให้เปิดหน้านี้ด้วย <b>Microsoft Edge</b> (มีเสียงไทย “Premwadee / Niwat Online (Natural)” ฟรี) หรือเพิ่มเสียงไทยใน Windows: Settings → Time &amp; Language → Speech → Add voices → Thai');
+  } else if(th.length){ warn.style.display='none'; }
+}
+if(synth){ loadVoices(); synth.onvoiceschanged=loadVoices; }
+
+// Split text into sentence-ish chunks (Chrome cuts off long utterances)
+function makeChunks(text){
+  const out=[]; const MAX=180;
+  const parts = text.split(/(\n+|(?<=[.!?。…ฯ])\s+|\s{1,})/);
+  let buf='';
+  for(const p of parts){
+    if(p===undefined) continue;
+    if((buf+p).length>MAX && buf.trim()){ out.push(buf); buf=''; }
+    if(p.length>MAX){ for(let i=0;i<p.length;i+=MAX) out.push(p.slice(i,i+MAX)); continue; }
+    buf+=p;
+    if(/\n/.test(p) && buf.trim()){ out.push(buf); buf=''; }
+  }
+  if(buf.length) out.push(buf);
+  return out;
+}
+
+function renderReader(){
+  reader.innerHTML='';
+  chunks.forEach((c,i)=>{const s=document.createElement('span');s.textContent=c;s.dataset.i=i;s.onclick=()=>jumpTo(i);reader.appendChild(s)});
+}
+function mark(i){
+  reader.querySelectorAll('span.cur').forEach(s=>s.classList.remove('cur'));
+  const s=reader.querySelector(`span[data-i="${i}"]`);
+  if(s){s.classList.add('cur'); s.scrollIntoView({block:'nearest',behavior:'smooth'});}
+  bar.style.width = chunks.length? (i/chunks.length*100)+'%' : '0';
+}
+
+function speakFrom(i){
+  synth.cancel();
+  idx=i;
+  speakNext();
+}
+function speakNext(){
+  while(idx<chunks.length && !chunks[idx].trim()) idx++;
+  if(idx>=chunks.length){ finish(); return; }
+  const u=new SpeechSynthesisUtterance(chunks[idx].trim());
+  const v=voices.find(v=>v.name===voiceSel.value);
+  if(v){u.voice=v;u.lang=v.lang}else{u.lang='th-TH'}
+  u.rate=+rate.value; u.pitch=+pitch.value;
+  const my=idx;
+  u.onstart=()=>mark(my);
+  u.onend=()=>{ if(state==='playing' && idx===my){ idx++; speakNext(); } };
+  u.onerror=e=>{ if(e.error!=='interrupted' && e.error!=='canceled'){ showWarn('อ่านไม่สำเร็จ: '+e.error); finish(); } };
+  synth.speak(u);
+}
+
+function start(){
+  const text=txt.value;
+  if(!text.trim()){ txt.focus(); return; }
+  chunks=makeChunks(text); renderReader();
+  txt.style.display='none'; reader.style.display='block';
+  state='playing'; ui(); speakFrom(0);
+}
+function jumpTo(i){ if(state==='idle') return; state='playing'; ui(); speakFrom(i); }
+function finish(){
+  state='idle'; synth && synth.cancel(); ui();
+  bar.style.width='100%'; setTimeout(()=>{ if(state==='idle') bar.style.width='0'; },800);
+  reader.style.display='none'; txt.style.display='block';
+}
+function ui(){
+  playBtn.textContent = state==='playing' ? '❚❚ หยุดชั่วคราว' : state==='paused' ? '▶ อ่านต่อ' : '▶ อ่าน';
+  stopBtn.disabled = state==='idle';
+}
+
+playBtn.onclick=()=>{
+  if(state==='idle') start();
+  else if(state==='playing'){ state='paused'; synth.cancel(); ui(); }       // cancel+resume from chunk is more reliable than pause()
+  else { state='playing'; ui(); speakFrom(idx); }
+};
+stopBtn.onclick=finish;
+$('clear').onclick=()=>{ finish(); txt.value=''; update(); txt.focus(); };
+
+voiceSel.onchange=()=>{ store('tr_voice',voiceSel.value); if(state==='playing') speakFrom(idx); };
+rate.oninput=()=>{ $('rateV').textContent=(+rate.value).toFixed(1)+'×'; store('tr_rate',rate.value); };
+pitch.oninput=()=>{ $('pitchV').textContent=(+pitch.value).toFixed(1); store('tr_pitch',pitch.value); };
+rate.onchange=pitch.onchange=()=>{ if(state==='playing') speakFrom(idx); };
+
+function update(){ $('count').textContent=txt.value.length.toLocaleString('th-TH')+' ตัวอักษร'; store('tr_text',txt.value); }
+txt.addEventListener('input',update);
+
+$('file').onchange=e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader(); r.onload=()=>{ finish(); txt.value=r.result; update(); }; r.readAsText(f,'utf-8');
+};
+
+// restore
+const sr=load('tr_rate'), sp=load('tr_pitch'), st=load('tr_text');
+if(sr){rate.value=sr; rate.oninput();}
+if(sp){pitch.value=sp; pitch.oninput();}
+txt.value = st || 'สวัสดีครับ นี่คือโปรแกรมทดลองอ่านข้อความภาษาไทยออกเสียง ลองวางข้อความของคุณแทนข้อความนี้ แล้วกดปุ่มอ่านได้เลยครับ';
+update();
+
+</script>
+</body>
+</html>

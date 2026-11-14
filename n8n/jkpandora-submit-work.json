@@ -1,0 +1,242 @@
+{
+  "name": "JK Pandora - รับผลงานคอร์ส AI + VPS ขึ้นเว็บ (Webhook)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "jkpandora-submit",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "รับผลงาน (Webhook)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        100
+      ],
+      "id": "wh",
+      "webhookId": "jkpandora-submit",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "JKP Submit Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $input.first().json.body || {};\nconst name = String(b.name || '').trim();\nif (!name) return [{ json: { ok: false, error: 'ต้องมี name' } }];\nconst payload = Buffer.from(JSON.stringify(b)).toString('base64');\nif (payload.length > 120000) return [{ json: { ok: false, error: 'งานใหญ่เกิน ~80KB ให้อัปไฟล์ขึ้น GitHub Releases แล้วส่งแค่ลิงก์ download/demo' } }];\nreturn [{ json: { ok: true, name, payload } }];"
+      },
+      "name": "ตรวจข้อมูล",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        100
+      ],
+      "id": "val"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "ข้อมูลครบ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        440,
+        100
+      ],
+      "id": "if1"
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "=cd /data/cloud_1tb/jkpandora.github.io && git pull -q --rebase; WORK='{{ $json.payload }}' LANG=C.UTF-8 PYTHONIOENCODING=utf-8 python3 tools/add_work.py",
+        "cwd": "/data/cloud_1tb/jkpandora.github.io"
+      },
+      "name": "สแกนรหัสลับ + AI เขียนคำอธิบาย + push GitHub (SSH)",
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        660,
+        0
+      ],
+      "id": "add",
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "",
+          "name": "VPS SSH Key (n8n)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const out = $input.first().json.stdout || '';\nlet o; try { o = JSON.parse(out.trim().split('\\n').pop()); } catch (e) { o = { ok: false, error: 'สคริปต์บน VPS ไม่ตอบ: ' + out.slice(-200) }; }\no.tg = Buffer.from((o.ok ? '✅ เพิ่มผลงานขึ้นเว็บแล้ว: ' + o.name + '\\n' + o.desc + '\\n' + o.url : '❌ อัปผลงานไม่สำเร็จ: ' + (o.name || '') + '\\n' + o.error)).toString('base64');\nreturn [{ json: o }];"
+      },
+      "name": "อ่านผล",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        0
+      ],
+      "id": "parse"
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "=cd /data/cloud_1tb/aetox-harness && set -a && . ./.env && set +a && echo '{{ $json.tg }}' | base64 -d > /tmp/work_msg.txt && curl -s -X POST \"https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage\" -d chat_id=\"$TELEGRAM_CHAT_ID\" --data-urlencode text@/tmp/work_msg.txt > /dev/null; echo sent",
+        "cwd": "/data/cloud_1tb/aetox-harness"
+      },
+      "name": "แจ้ง Telegram JKth01",
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        0
+      ],
+      "id": "tg",
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "",
+          "name": "VPS SSH Key (n8n)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: $('อ่านผล').item.json.ok, name: $('อ่านผล').item.json.name, url: $('อ่านผล').item.json.url, desc: $('อ่านผล').item.json.desc, error: $('อ่านผล').item.json.error }) }}",
+        "options": {}
+      },
+      "name": "ตอบกลับผู้ส่ง",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1320,
+        0
+      ],
+      "id": "resp"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: false, error: $json.error }) }}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "name": "ตอบกลับ (ข้อมูลไม่ครบ)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        660,
+        220
+      ],
+      "id": "resp2"
+    }
+  ],
+  "connections": {
+    "รับผลงาน (Webhook)": {
+      "main": [
+        [
+          {
+            "node": "ตรวจข้อมูล",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ตรวจข้อมูล": {
+      "main": [
+        [
+          {
+            "node": "ข้อมูลครบ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ข้อมูลครบ?": {
+      "main": [
+        [
+          {
+            "node": "สแกนรหัสลับ + AI เขียนคำอธิบาย + push GitHub (SSH)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "ตอบกลับ (ข้อมูลไม่ครบ)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "สแกนรหัสลับ + AI เขียนคำอธิบาย + push GitHub (SSH)": {
+      "main": [
+        [
+          {
+            "node": "อ่านผล",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "อ่านผล": {
+      "main": [
+        [
+          {
+            "node": "แจ้ง Telegram JKth01",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "แจ้ง Telegram JKth01": {
+      "main": [
+        [
+          {
+            "node": "ตอบกลับผู้ส่ง",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Bangkok"
+  },
+  "active": false
+}

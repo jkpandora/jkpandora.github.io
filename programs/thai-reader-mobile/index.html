@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="JK Reader">
+<title>JK Thai Reader Mobile</title>
+<style>
+:root{
+  --bg0:#0b1020; --card:#151d3b; --card2:#1b2550; --line:#26315f;
+  --txt:#e8ecff; --mut:#93a0c8; --dim:#66729c;
+  --acc:#5b8cff; --acc2:#8a5bff; --ok:#22c38e; --warn:#ffb547; --bad:#ff5d73;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:radial-gradient(900px 600px at 0% -10%,#1d2a6b 0%,transparent 60%),radial-gradient(700px 500px at 110% 110%,#3a1f73 0%,transparent 55%),var(--bg0);background-attachment:fixed;color:var(--txt);
+  font-family:"Sarabun","Leelawadee UI",-apple-system,"Segoe UI",Tahoma,sans-serif;font-size:15px}
+button{font-family:inherit}
+.app{max-width:760px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 14px calc(150px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px}
+header{display:flex;align-items:center;gap:12px}
+.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--acc),var(--acc2));display:grid;place-items:center;box-shadow:0 8px 24px #5b8cff55;flex:none}
+.logo svg{width:24px;height:24px}
+h1{font-size:18px;margin:0;font-weight:700}
+.sub{color:var(--mut);font-size:12px;margin-top:2px}
+.hbtn{margin-left:auto;width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--txt);display:grid;place-items:center;flex:none}
+.hbtn svg{width:19px;height:19px}
+.card{background:linear-gradient(180deg,#172046ee,#121a3aee);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 30px #00000040}
+.toolbar{display:flex;gap:8px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.ttl{font-weight:700;font-size:14px;margin-right:auto}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card2);color:var(--txt);padding:8px 11px;border-radius:10px;font-size:13px}
+.btn svg{width:16px;height:16px}
+.btn:disabled{opacity:.4}
+.editor{position:relative;height:42vh;min-height:230px}
+textarea{width:100%;height:100%;resize:none;border:0;outline:0;background:transparent;color:var(--txt);padding:14px 16px;font-family:inherit;font-size:17px;line-height:1.75}
+textarea::placeholder{color:var(--dim)}
+.reader{position:absolute;inset:0;overflow:auto;padding:10px 12px;display:none;font-size:17px;line-height:1.8;-webkit-overflow-scrolling:touch}
+.reader.on{display:block}
+.chunk{padding:8px 11px;border-radius:10px;margin:3px 0;color:var(--mut);border:1px solid transparent;white-space:pre-wrap;transition:.2s}
+.chunk.done{color:#7d88b0}
+.chunk.now{color:#fff;background:linear-gradient(90deg,#5b8cff2e,#8a5bff22);border-color:#5b8cff88}
+.foot{display:flex;gap:12px;flex-wrap:wrap;padding:9px 14px;border-top:1px solid var(--line);color:var(--mut);font-size:12.5px}
+.foot b{color:var(--txt)}
+.sect{padding:12px 14px}
+.sect h3{margin:0 0 10px;font-size:13.5px;color:var(--mut);font-weight:600;display:flex;align-items:center;gap:8px}
+.sect h3 .count{margin-left:auto;font-size:11.5px;color:var(--dim);font-weight:400}
+.voices{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+@media (max-width:380px){.voices{grid-template-columns:1fr}}
+.voice{position:relative;border:1px solid var(--line);background:#121a39;border-radius:14px;padding:10px 40px 10px 10px;cursor:pointer}
+.voice.sel{border-color:var(--acc);background:linear-gradient(180deg,#203070,#17204a);box-shadow:0 0 0 3px #5b8cff2a}
+.vtop{display:flex;align-items:center;gap:9px}
+.av{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;flex:none;background:linear-gradient(135deg,#ff7eb3,#ff758c)}
+.av.m{background:linear-gradient(135deg,#4facfe,#00c6fb)}
+.av.u{background:linear-gradient(135deg,#8a5bff,#5b8cff)}
+.vname{font-weight:700;font-size:14px;line-height:1.2;word-break:break-word}
+.vmeta{color:var(--mut);font-size:11px;margin-top:2px}
+.tag{display:inline-block;font-size:10.5px;padding:1px 7px;border-radius:99px;margin-top:6px;margin-right:4px;border:1px solid var(--line);color:var(--mut)}
+.tag.best{color:#ffd68a;border-color:#8a6a2a}
+.tag.off{color:#9ff0cf;border-color:#1f7a5a}
+.prev{position:absolute;top:50%;right:8px;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:#0f1631;color:var(--txt);display:grid;place-items:center}
+.prev svg{width:12px;height:12px}
+.novoice{color:var(--warn);font-size:13px;line-height:1.7;background:#ffb54712;border:1px solid #ffb54755;border-radius:12px;padding:10px 12px}
+.row{display:grid;grid-template-columns:70px 1fr 54px;align-items:center;gap:10px;margin:8px 0}
+.row label{color:var(--mut);font-size:13px}
+.row .val{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:99px;background:linear-gradient(90deg,var(--acc) var(--p,50%),#2a3566 var(--p,50%));outline:0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid var(--acc);box-shadow:0 2px 8px #0008}
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 4px}
+.chip{border:1px solid var(--line);background:#121a39;color:var(--mut);font-size:12.5px;padding:5px 11px;border-radius:99px}
+.chip.on{color:#fff;border-color:var(--acc)}
+/* bottom control dock */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,#0b1020cc,#0b1020f5 30%);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line)}
+.dock .in{max-width:760px;margin:0 auto}
+.status{display:flex;align-items:center;gap:9px;font-size:12.8px;color:var(--mut);min-height:20px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--dim);flex:none}
+.dot.play{background:var(--ok);box-shadow:0 0 0 4px #22c38e33;animation:pulse 1.2s infinite}
+.dot.load{background:var(--warn)}
+.dot.err{background:var(--bad)}
+@keyframes pulse{50%{opacity:.4}}
+.bar{height:6px;border-radius:99px;background:#212b58;overflow:hidden;margin:8px 0}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .4s}
+.ctrls{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:9px}
+.big{border:0;border-radius:14px;padding:13px 8px;font-size:15.5px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;gap:7px}
+.big svg{width:18px;height:18px}
+.big:disabled{opacity:.35;filter:grayscale(.5)}
+.play{background:linear-gradient(135deg,#4f7dff,#7a5cff);box-shadow:0 8px 20px #4f7dff55}
+.pause{background:linear-gradient(135deg,#ffb547,#ff8f3c)}
+.stop{background:linear-gradient(135deg,#ff6b81,#e64560)}
+.toast{position:fixed;left:50%;bottom:calc(150px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:#1e2754;border:1px solid var(--line);color:var(--txt);padding:11px 15px;border-radius:12px;box-shadow:0 14px 40px #0009;width:max-content;max-width:90vw;font-size:13.5px;line-height:1.55;transition:.25s;z-index:9}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{border-color:#ff5d7388}
+.modal{position:fixed;inset:0;background:#0009;display:none;place-items:center;z-index:10;padding:16px}
+.modal.on{display:grid}
+.mbox{width:560px;max-width:100%;max-height:85vh;overflow:auto;background:#151d3b;border:1px solid var(--line);border-radius:18px;padding:20px 20px;line-height:1.7;font-size:14px}
+.mbox h2{margin:0 0 8px;font-size:17px}
+.mbox h4{margin:14px 0 4px;font-size:14px;color:#9fc0ff}
+.mbox ul,.mbox ol{padding-left:20px;margin:4px 0}
+</style>
+</head>
+<body><a href="../../" style="position:fixed;top:10px;right:10px;z-index:999;background:#0b1020cc;color:#5eead4;border:1px solid #22304f;border-radius:99px;padding:5px 12px;font:13px sans-serif;text-decoration:none">← JK Pandora</a>
+<div class="app">
+  <header>
+    <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg></div>
+    <div><h1>JK Thai Reader</h1><div class="sub">อ่านออกเสียงภาษาไทย · มือถือ v4.0</div></div>
+    <button class="hbtn" onclick="showHelp()" aria-label="วิธีใช้"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></button>
+  </header>
+
+  <section class="card">
+    <div class="toolbar">
+      <div class="ttl" id="edTitle">ข้อความที่ต้องการให้อ่าน</div>
+      <button class="btn" id="bEdit" style="display:none" onclick="editMode()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>แก้ไข</button>
+      <button class="btn" id="bOpen" onclick="$('fileIn').click()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>เปิดไฟล์</button>
+      <button class="btn" id="bClear" onclick="clearText()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2m-9 0 1 14h8l1-14"/></svg>ล้าง</button>
+      <input type="file" id="fileIn" accept=".txt,.md,.csv,.log,.srt,text/plain" style="display:none">
+    </div>
+    <div class="editor">
+      <textarea id="txt" placeholder="พิมพ์ หรือกดค้างแล้วเลือก &quot;วาง&quot; ข้อความที่นี่ แล้วกด ▶ เริ่มอ่าน"></textarea>
+      <div class="reader" id="reader"></div>
+    </div>
+    <div class="foot">
+      <span>ตัวอักษร: <b id="cnt">0</b></span>
+      <span>เวลาอ่านประมาณ: <b id="est">0 วินาที</b></span>
+      <span id="footHint" style="color:var(--dim)">ขณะอ่าน แตะย่อหน้าใดก็ได้เพื่อข้ามไปตรงนั้น</span>
+    </div>
+  </section>
+
+  <section class="card sect">
+    <h3>เลือกเสียงพากย์ <span class="count" id="vcount"></span></h3>
+    <div class="voices" id="voices"></div>
+  </section>
+
+  <section class="card sect">
+    <h3>ปรับเสียง</h3>
+    <div class="row"><label>ความเร็ว</label><input type="range" id="rate" min="50" max="250" step="5" value="100"><span class="val" id="rateV">1.00x</span></div>
+    <div class="presets" id="presets"></div>
+    <div class="row"><label>ความดัง</label><input type="range" id="vol" min="10" max="100" step="5" value="100"><span class="val" id="volV">100%</span></div>
+    <div class="row"><label>ระดับเสียง</label><input type="range" id="pitch" min="50" max="150" step="5" value="100"><span class="val" id="pitchV">0</span></div>
+  </section>
+</div>
+
+<div class="dock"><div class="in">
+  <div class="status"><span class="dot" id="dot"></span><span id="stat">พร้อมใช้งาน</span></div>
+  <div class="bar"><i id="prog"></i></div>
+  <div class="ctrls">
+    <button class="big play" id="bPlay" onclick="play()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg><span id="playLbl">เริ่มอ่าน</span></button>
+    <button class="big pause" id="bPause" onclick="pause()" disabled><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg><span id="pauseLbl">พัก</span></button>
+    <button class="big stop" id="bStop" onclick="stop()" disabled><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>หยุด</button>
+  </div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal" onclick="if(event.target===this)this.classList.remove('on')"><div class="mbox" id="mbox"></div></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const synth = window.speechSynthesis;
+const LS = {
+  get(k,d){ try{ const v=localStorage.getItem('jkr_'+k); return v==null?d:JSON.parse(v); }catch(e){ return d; } },
+  set(k,v){ try{ localStorage.setItem('jkr_'+k, JSON.stringify(v)); }catch(e){} }
+};
+let S = Object.assign({voice:'', rate:100, vol:100, pitch:100}, LS.get('settings',{}));
+let VOICES = [];
+let state='idle', chunks=[], cur=-1, resumeAt=-1, lastKey='', runId=0;
+
+/* ---------- voices ---------- */
+const FEMALE = /kanya|narisa|premwadee|achara|female|woman|หญิง|google/i;
+const MALE = /niwat|pattara|male|man|ชาย/i;
+function gender(v){ const n=v.name; if(MALE.test(n) && !/female/i.test(n)) return 'm'; if(FEMALE.test(n)) return 'f'; return 'u'; }
+function quality(v){ return /premium|enhanced|neural|natural|online/i.test(v.name) || /google/i.test(v.name) && !v.localService; }
+function prettyName(v){ return v.name.replace(/\s*\((enhanced|premium)\)/i,'').replace(/^Microsoft\s+/,'').replace(/\s*-\s*Thai.*$/i,'').replace(/ Online \(Natural\)/i,''); }
+function loadVoices(){
+  if(!synth){ VOICES=[]; renderVoices(); return; }
+  const all = synth.getVoices();
+  VOICES = all.filter(v=>/^th/i.test(v.lang) || /thai|ไทย/i.test(v.name))
+    .sort((a,b)=>(quality(b)-quality(a)) || a.name.localeCompare(b.name));
+  if(VOICES.length && !VOICES.find(v=>v.voiceURI===S.voice)) S.voice = VOICES[0].voiceURI;
+  renderVoices();
+}
+function curVoice(){ return VOICES.find(v=>v.voiceURI===S.voice) || VOICES[0] || null; }
+function renderVoices(){
+  $('vcount').textContent = VOICES.length ? `พบเสียงไทย ${VOICES.length} เสียงในเครื่องนี้` : '';
+  if(!synth){ $('voices').innerHTML='<div class="novoice">เบราว์เซอร์นี้ไม่รองรับการอ่านออกเสียง — ลองเปิดด้วย Safari (iPhone) หรือ Chrome (Android)</div>'; return; }
+  if(!VOICES.length){
+    $('voices').innerHTML=`<div class="novoice" style="grid-column:1/-1">ยังไม่พบเสียงภาษาไทยในเครื่องนี้<br>
+      • <b>iPhone:</b> ตั้งค่า › การช่วยการเข้าถึง › เนื้อหาที่พูด › เสียง › ไทย › ดาวน์โหลด Kanya / Narisa<br>
+      • <b>Android:</b> ตั้งค่า › การช่วยเหลือพิเศษ › เอาต์พุตการอ่านออกเสียง › Google › ติดตั้งข้อมูลเสียง › ไทย<br>
+      แล้วปิด-เปิดหน้านี้ใหม่ <a href="#" onclick="showHelp();return false" style="color:#9fc0ff">ดูวิธีละเอียด</a></div>`;
+    return;
+  }
+  $('voices').innerHTML = VOICES.map((v,i)=>{
+    const g=gender(v), nm=prettyName(v);
+    const tags=[]; if(quality(v)) tags.push(['best','เสียงคุณภาพสูง']); if(v.localService) tags.push(['off','ใช้ได้ไม่มีเน็ต']);
+    return `<div class="voice ${v.voiceURI===S.voice?'sel':''}" onclick="pickVoice(${i})">
+      <button class="prev" aria-label="ฟังตัวอย่าง" onclick="event.stopPropagation();preview(${i})"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></button>
+      <div class="vtop"><div class="av ${g}">${esc(nm.charAt(0).toUpperCase())}</div>
+        <div><div class="vname">${esc(nm)}</div><div class="vmeta">${g==='f'?'ผู้หญิง':g==='m'?'ผู้ชาย':'เสียงไทย'} · ${esc(v.lang)}</div></div></div>
+      ${tags.map(t=>`<span class="tag ${t[0]}">${t[1]}</span>`).join('')}
+    </div>`;}).join('');
+}
+function pickVoice(i){ S.voice=VOICES[i].voiceURI; renderVoices(); save(); if(state==='playing') restartAt(cur); }
+
+/* ---------- settings ---------- */
+function save(){ LS.set('settings',S); }
+function speed(){ return S.rate/100; }
+function paint(el){ const p=(el.value-el.min)/(el.max-el.min)*100; el.style.setProperty('--p',p+'%'); }
+function fmtTime(sec){ sec=Math.round(sec); if(sec<60) return sec+' วินาที'; const m=Math.floor(sec/60), s=sec%60; return m+' นาที'+(s?' '+s+' วินาที':''); }
+function updCount(){ const t=$('txt').value; $('cnt').textContent=t.length.toLocaleString(); $('est').textContent=fmtTime(t.replace(/\s/g,'').length/14/speed()); }
+const PRE=[[75,'0.75x'],[100,'ปกติ'],[125,'1.25x'],[150,'1.5x'],[200,'2x']];
+function renderPresets(){ $('presets').innerHTML=PRE.map(p=>`<span class="chip ${S.rate==p[0]?'on':''}" onclick="setRate(${p[0]})">${p[1]}</span>`).join(''); }
+function setRate(v){ $('rate').value=v; onRate(); }
+let liveT;
+function liveRestart(){ clearTimeout(liveT); liveT=setTimeout(()=>{ if(state==='playing') restartAt(cur); },350); }
+function onRate(){ S.rate=+$('rate').value; $('rateV').textContent=speed().toFixed(2)+'x'; paint($('rate')); renderPresets(); updCount(); save(); liveRestart(); }
+function onVol(){ S.vol=+$('vol').value; $('volV').textContent=S.vol+'%'; paint($('vol')); save(); liveRestart(); }
+function onPitch(){ S.pitch=+$('pitch').value; const d=S.pitch-100; $('pitchV').textContent=(d>0?'+':'')+d; paint($('pitch')); save(); liveRestart(); }
+
+/* ---------- ui helpers ---------- */
+let toastT;
+function toast(msg, kind){ const t=$('toast'); t.className='toast show'+(kind==='err'?' err':''); t.innerHTML=msg; clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'), kind==='err'?9000:4000); }
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function setStat(text, kind){ $('stat').textContent=text; $('dot').className='dot '+(kind||''); }
+function setButtons(){
+  const busy = state==='playing'||state==='paused';
+  $('bPlay').disabled = busy;
+  $('bPause').disabled = !busy;
+  $('bStop').disabled = !busy;
+  $('pauseLbl').textContent = state==='paused' ? 'อ่านต่อ' : 'พัก';
+  ['bOpen','bClear'].forEach(b=>$(b).disabled=busy);
+  $('playLbl').textContent = resumeAt>0 ? 'อ่านต่อ' : 'เริ่มอ่าน';
+}
+function sourceText(){
+  const ta=$('txt'); const sel=ta.value.substring(ta.selectionStart, ta.selectionEnd);
+  return sel.trim() && document.activeElement===ta ? sel : ta.value;
+}
+
+/* ---------- text chunking (Thai-aware) ---------- */
+const MAXLEN = 180;
+function splitText(text){
+  const clean = text
+    .replace(/^\s{0,3}#{1,6}\s+/gm,'')            // markdown headings
+    .replace(/!?\[([^\]]*)\]\([^)]*\)/g,'$1')     // links
+    .replace(/\*{1,3}|_{2,3}|~~|`+/g,'')          // emphasis
+    .replace(/^\s*([-*_=]\s*){3,}$/gm,'')         // rules
+    .replace(/[ \t 　]+/g,' ');
+  const out=[];
+  clean.split(/\n\s*\n|\n/).forEach(par=>{
+    par=par.trim(); if(!par) return;
+    // split at sentence marks / Thai spaces into pieces <= MAXLEN
+    const parts = par.split(/(?<=[.!?…।।ฯ])\s+|(?<=\S)\s+(?=\S)/);
+    let buf='';
+    parts.forEach(p=>{
+      if(p.length>MAXLEN){ if(buf){out.push(buf);buf='';} for(let i=0;i<p.length;i+=MAXLEN) out.push(p.slice(i,i+MAXLEN)); return; }
+      if((buf+' '+p).trim().length>MAXLEN){ out.push(buf); buf=p; } else buf=(buf?buf+' ':'')+p;
+    });
+    if(buf) out.push(buf);
+  });
+  return out.filter(c=>/[\p{L}\p{N}]/u.test(c));
+}
+
+/* ---------- reader view ---------- */
+function readerMode(list){
+  chunks=list; const r=$('reader');
+  r.innerHTML = list.map((c,i)=>`<div class="chunk" id="c${i}" onclick="jump(${i})">${esc(c)}</div>`).join('');
+  r.classList.add('on'); $('txt').style.visibility='hidden';
+  $('bEdit').style.display=''; $('edTitle').textContent='กำลังอ่าน';
+}
+function editMode(){
+  if(state!=='idle') stop();
+  $('reader').classList.remove('on'); $('txt').style.visibility='visible';
+  $('bEdit').style.display='none'; $('edTitle').textContent='ข้อความที่ต้องการให้อ่าน';
+}
+function mark(i){
+  for(let k=0;k<chunks.length;k++){ const el=$('c'+k); if(!el) continue; el.classList.toggle('now',k===i); el.classList.toggle('done',k<i); }
+  const el=$('c'+i); if(el){ const r=$('reader'); r.scrollTo({top:el.offsetTop-r.clientHeight/2+el.clientHeight/2,behavior:'smooth'}); }
+}
+
+/* ---------- speech engine ---------- */
+function makeUtter(text){
+  const u=new SpeechSynthesisUtterance(text);
+  const v=curVoice(); if(v){ u.voice=v; u.lang=v.lang; } else u.lang='th-TH';
+  u.rate=Math.min(10, speed()); u.volume=S.vol/100; u.pitch=S.pitch/100;
+  return u;
+}
+let keepAlive;
+function speakFrom(i, id){
+  if(id!==runId) return;
+  if(i>=chunks.length){ finish(); return; }
+  cur=i; mark(i); LS.set('pos', {key:lastKey, idx:i});
+  $('prog').style.width=(i/chunks.length*100)+'%';
+  setStat(`กำลังอ่านส่วนที่ ${i+1}/${chunks.length}`,'play');
+  const u=makeUtter(chunks[i]);
+  let ended=false;
+  u.onend=()=>{ if(ended) return; ended=true; if(id===runId && state==='playing') speakFrom(i+1,id); };
+  u.onerror=e=>{ if(ended) return; ended=true;
+    if(id!==runId || e.error==='interrupted' || e.error==='canceled') return;
+    if(e.error==='not-allowed'){ state='idle'; resumeAt=i; setButtons(); setStat('แตะ "อ่านต่อ" อีกครั้งเพื่อเริ่มเสียง','err'); return; }
+    // skip a broken chunk instead of stopping the whole reading
+    setTimeout(()=>speakFrom(i+1,id),150);
+  };
+  synth.speak(u);
+}
+function startEngine(idx){
+  runId++; const id=runId;
+  synth.cancel();
+  state='playing'; setButtons();
+  // iOS needs speak() inside the tap handler; keep it synchronous
+  speakFrom(idx,id);
+  clearInterval(keepAlive);
+  // Chrome on Android sometimes stalls long sessions; nudge it
+  keepAlive=setInterval(()=>{ if(state==='playing' && !synth.speaking && !synth.pending){ speakFrom(cur,runId); } },4000);
+}
+function restartAt(i){ startEngine(Math.max(0,i)); }
+function play(startIdx){
+  if(!synth){ toast('เบราว์เซอร์นี้อ่านออกเสียงไม่ได้ — ลองเปิดด้วย Safari หรือ Chrome','err'); return; }
+  const text=sourceText();
+  if(!text.trim()){ toast('ยังไม่มีข้อความ — พิมพ์หรือวางข้อความก่อนครับ'); return; }
+  const key=text.length+'|'+text.slice(0,200);
+  const list=splitText(text);
+  if(!list.length){ setStat('ไม่มีข้อความที่อ่านออกเสียงได้'); return; }
+  let start=(typeof startIdx==='number')?startIdx:(key===lastKey && resumeAt>0 ? resumeAt : 0);
+  if(typeof startIdx!=='number' && start===0){ const p=LS.get('pos',null); if(p && p.key===key && p.idx>0 && p.idx<list.length && lastKey!==key) start=p.idx; }
+  lastKey=key; resumeAt=-1;
+  if(chunks.join('\u0000')!==list.join('\u0000') || !$('reader').classList.contains('on')) readerMode(list);
+  if(start>0 && typeof startIdx!=='number') toast(`อ่านต่อจากส่วนที่ ${start+1}`);
+  startEngine(start);
+}
+function jump(i){ if(state==='idle'){ resumeAt=-1; play(i); } else restartAt(i); }
+function pause(){
+  if(state==='playing'){
+    // cancel+resume is more reliable than synth.pause() on Android
+    runId++; synth.cancel(); clearInterval(keepAlive);
+    state='paused'; resumeAt=cur; setStat('พักไว้ — กด "อ่านต่อ" เพื่อฟังต่อ');
+  } else if(state==='paused'){ startEngine(cur); }
+  setButtons();
+}
+function stop(){
+  runId++; if(synth) synth.cancel(); clearInterval(keepAlive);
+  if(state!=='idle'){ resumeAt = cur>0 ? cur : -1; }
+  state='idle'; setStat(resumeAt>0?`หยุดที่ส่วนที่ ${cur+1} — กด "อ่านต่อ" ได้`:'หยุดแล้ว'); setButtons();
+}
+function finish(){
+  clearInterval(keepAlive); state='idle'; resumeAt=-1; LS.set('pos',null);
+  $('prog').style.width='100%'; mark(chunks.length); setStat('อ่านจบแล้ว ✓'); setButtons();
+}
+function preview(i){
+  if(state!=='idle'){ toast('หยุดการอ่านก่อน แล้วค่อยฟังตัวอย่างครับ'); return; }
+  synth.cancel();
+  const saved=S.voice; S.voice=VOICES[i].voiceURI;
+  const u=makeUtter('สวัสดีครับ นี่คือตัวอย่างเสียงอ่านภาษาไทย ของ เจเค ไทย รีดเดอร์');
+  S.voice=saved;
+  u.onend=()=>setStat('พร้อมใช้งาน');
+  setStat('กำลังเล่นเสียงตัวอย่าง','play'); synth.speak(u);
+}
+
+/* ---------- text input ---------- */
+let saveT;
+function clearText(){ $('txt').value=''; updCount(); resumeAt=-1; LS.set('text',''); setButtons(); editMode(); }
+$('fileIn').onchange = async e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const buf=await f.arrayBuffer(); let t;
+  try{ t=new TextDecoder('utf-8',{fatal:true}).decode(buf); }catch(_){ try{ t=new TextDecoder('windows-874').decode(buf); }catch(__){ t=new TextDecoder().decode(buf); } }
+  $('txt').value=t.replace(/^﻿/,''); updCount(); LS.set('text',$('txt').value); editMode(); e.target.value='';
+  toast('เปิดไฟล์ '+esc(f.name)+' แล้ว');
+};
+$('txt').addEventListener('input',()=>{ updCount(); resumeAt=-1; setButtons(); clearTimeout(saveT); saveT=setTimeout(()=>LS.set('text',$('txt').value),500); });
+$('rate').addEventListener('input',onRate);
+$('vol').addEventListener('input',onVol);
+$('pitch').addEventListener('input',onPitch);
+
+function showHelp(){
+  const n=VOICES.length;
+  $('mbox').innerHTML=`<h2>วิธีใช้ JK Thai Reader (มือถือ)</h2>
+  <ol><li>พิมพ์ / วางข้อความ หรือกด <b>เปิดไฟล์</b> (.txt)</li><li>เลือกเสียง แล้วกด <b>▶ เริ่มอ่าน</b></li><li>ระหว่างอ่าน แตะย่อหน้าใดก็ได้เพื่อข้ามไปอ่านตรงนั้น</li><li>ปิดแล้วเปิดใหม่ แอปจำข้อความและตำแหน่งที่อ่านค้างไว้ให้</li></ol>
+  <h4>เสียงที่ใช้</h4>
+  แอปเวอร์ชันมือถือใช้เสียงภาษาไทยที่มีอยู่ในโทรศัพท์ (ตอนนี้พบ ${n} เสียง) ใช้ได้แม้ไม่มีเน็ต
+  <h4>เพิ่มเสียงไทยคุณภาพสูง — iPhone</h4>
+  ตั้งค่า › การช่วยการเข้าถึง › เนื้อหาที่พูด › เสียง › ไทย › แตะ <b>Narisa</b> หรือ <b>Kanya (คุณภาพสูง/Enhanced)</b> เพื่อดาวน์โหลด แล้วปิด-เปิดแอปใหม่
+  <h4>เพิ่มเสียงไทย — Android</h4>
+  ตั้งค่า › การช่วยเหลือพิเศษ › เอาต์พุตการอ่านออกเสียง › เครื่องมือที่ต้องการ: <b>Google</b> › ⚙ › ติดตั้งข้อมูลเสียง › <b>ไทย</b>
+  <h4>ติดตั้งเป็นไอคอนบนหน้าจอ</h4>
+  • iPhone (Safari): ปุ่มแชร์ › <b>เพิ่มไปยังหน้าจอโฮม</b><br>• Android (Chrome): เมนู ⋮ › <b>เพิ่มลงในหน้าจอหลัก</b>
+  <h4>หมายเหตุ</h4>
+  ควรเปิดหน้าจอค้างไว้ขณะฟัง — บางเครื่องหยุดอ่านเมื่อล็อกหน้าจอ
+  <div style="text-align:right;margin-top:14px"><button class="btn" onclick="$('modal').classList.remove('on')">ปิด</button></div>`;
+  $('modal').classList.add('on');
+}
+
+/* ---------- init ---------- */
+$('rate').value=S.rate; $('vol').value=S.vol; $('pitch').value=S.pitch;
+onRate(); onVol(); onPitch();
+const lastText=LS.get('text',''); if(lastText){ $('txt').value=lastText; }
+updCount(); setButtons();
+if(synth){ loadVoices(); synth.onvoiceschanged=loadVoices; setTimeout(loadVoices,800); setTimeout(loadVoices,2500); }
+else renderVoices();
+document.addEventListener('visibilitychange',()=>{ if(document.hidden && state==='playing'){ /* let it continue where allowed */ } });
+</script>
+</body>
+</html>

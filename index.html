@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JK Pandora · AI Projects Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/theme.css">
+<style>
+#addForm label{display:flex;flex-direction:column;gap:4px;color:var(--mut);font-size:13px}
+#addForm input,#addForm select{background:#070b16;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:8px 10px;font-family:inherit}
+.fbtn,.chip{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:99px;padding:6px 14px;cursor:pointer;font-family:inherit;margin:0 6px 6px 0}
+.chip.on,.fbtn:hover{border-color:var(--acc);color:var(--acc)}
+.dl{display:inline-block;margin:10px 8px 0 0;padding:6px 14px;border-radius:99px;background:var(--acc);color:#04201b;text-decoration:none;font-weight:600;font-size:13px}
+.dl.alt{background:transparent;color:var(--acc);border:1px solid var(--acc)}
+</style>
+</head>
+<body>
+<nav><div class="in"><b>JK Pandora</b><a href="#projects">ผลงาน</a><a href="#programs">โปรแกรม</a><a href="#add">เพิ่มผลงาน</a><a href="#about">เกี่ยวกับ</a><a href="#stack">เครื่องมือ</a></div></nav>
+
+<header><div class="wrap">
+<span class="pill live">● AI Course Showcase</span><span class="pill">jkpandora.github.io</span>
+<h1>รวมผลงานระบบ AI<br><span>ของ JK Pandora</span></h1>
+<p class="sub" style="max-width:700px">ผลงานจากคอร์ส AI ทั้งหมดรวมไว้ที่นี่ มีทั้งระบบ AI Agent ที่ดูแลเซิร์ฟเวอร์, ระบบอัตโนมัติด้วย n8n, เครื่องมือเทรด และแชทบอต แต่ละระบบมีหน้าเว็บของตัวเอง</p>
+<div class="grid" style="margin-top:30px">
+<div class="card"><div class="stat" id="nLive">0</div><p>ระบบที่ใช้งานจริง</p></div>
+<div class="card"><div class="stat" id="nSoon">0</div><p>ระบบที่กำลังพัฒนา</p></div>
+<div class="card"><div class="stat" id="nProg">0</div><p>โปรแกรมที่สร้างด้วย Claude</p></div>
+<div class="card"><div class="stat">20</div><p>แผนก AI ใน Aetox Harness</p></div>
+</div>
+</div></header>
+
+<section id="projects"><div class="wrap">
+<h2>ผลงาน</h2><p class="sub">คลิกที่การ์ดเพื่อดูรายละเอียดของแต่ละระบบ</p>
+<div class="grid" id="list"></div>
+</div></section>
+
+<section id="programs"><div class="wrap">
+<h2>โปรแกรมที่สร้างด้วย Claude</h2><p class="sub">โปรแกรมที่ทำไว้ใช้เอง ทั้งตัวอ่านไฟล์, PDF, Windows และสื่อ</p>
+<div id="catBar" style="margin-bottom:14px"></div>
+<div class="grid" id="progList"></div>
+</div></section>
+
+<section id="add"><div class="wrap">
+<h2>เครื่องมือเพิ่มผลงาน</h2><p class="sub">กรอกข้อมูล → กดสร้างโค้ด → Copy ไปวางใน <code>assets/projects.js</code> ในส่วน PROGRAMS → push ขึ้น GitHub</p>
+<form class="card" id="addForm" style="display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+<label>ไอคอน<input name="icon" value="🧩"></label>
+<label>ชื่อโปรแกรม<input name="name" required></label>
+<label>หมวด<select name="cat"><option>เครื่องมือ</option><option>เอกสาร/PDF</option><option>Windows</option><option>สื่อ/มัลติมีเดีย</option><option>เทรด</option><option>อื่นๆ</option></select></label>
+<label>เทคโนโลยี (คั่นด้วย ,)<input name="tech" placeholder="Python, Claude API"></label>
+<label style="grid-column:1/-1">คำอธิบาย<input name="desc"></label>
+<label>ลิงก์ดาวน์โหลด<input name="download" placeholder="https://github.com/jkpandora/.../releases"></label>
+<label>ลิงก์ Demo<input name="demo" placeholder="(ถ้ามี)"></label>
+<div style="grid-column:1/-1"><button class="fbtn" type="submit">สร้างโค้ด</button> <button class="fbtn" type="button" id="copyBtn">Copy</button> <span id="copyMsg" class="sub"></span></div>
+</form>
+<pre id="codeOut">// โค้ดจะขึ้นตรงนี้</pre>
+</div></section>
+
+<section id="about"><div class="wrap">
+<h2>เกี่ยวกับ</h2><p class="sub">Jk · Bangkok</p>
+<div class="card"><p>ช่างเทคนิค AV และวิศวกรรมอาคาร ที่หันมาสร้างระบบอัตโนมัติด้วย AI ทั้ง AI Agent ดูแล VPS, workflow บน n8n และเครื่องมือวิเคราะห์ตลาดทองคำ (XAUUSD)</p></div>
+</div></section>
+
+<section id="stack"><div class="wrap">
+<h2>เครื่องมือที่ใช้</h2><p class="sub">Tech Stack</p>
+<p><span class="pill">Claude</span><span class="pill">Gemini</span><span class="pill">GitHub Copilot CLI</span><span class="pill">n8n</span><span class="pill">Docker</span><span class="pill">Coolify</span><span class="pill">Ubuntu VPS</span><span class="pill">SurrealDB</span><span class="pill">MetaTrader 5</span><span class="pill">Telegram Bot</span><span class="pill">GitHub Pages</span></p>
+</div></section>
+
+<footer><div class="wrap">© JK Pandora · โฮสต์บน GitHub Pages</div></footer>
+
+<script src="./assets/projects.js"></script>
+<script>
+const P=window.PROJECTS||[];
+document.getElementById('nLive').textContent=P.filter(p=>p.status==='live').length;
+document.getElementById('nSoon').textContent=P.filter(p=>p.status!=='live').length;
+document.getElementById('list').innerHTML=P.map(p=>`
+<a class="card proj ${p.status==='live'?'':'soon'}" href="./${p.path}">
+  <div class="ic">${p.icon}</div>
+  <h3>${p.name} ${p.status==='live'?'<span class="pill live" style="font-size:11px">LIVE</span>':'<span class="pill" style="font-size:11px">เร็วๆ นี้</span>'}</h3>
+  <p>${p.desc}</p>
+  <div style="margin-top:10px">${p.tags.map(t=>`<span class="pill">${t}</span>`).join('')}</div>
+</a>`).join('');
+
+const G=window.PROGRAMS||[];let cat='ทั้งหมด';
+document.getElementById('nProg').textContent=G.filter(x=>!x.example).length;
+const esc=t=>String(t||'').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+function drawProg(){
+ const cats=['ทั้งหมด',...new Set(G.map(x=>x.cat))];
+ document.getElementById('catBar').innerHTML=cats.map(c=>`<button class="chip ${c===cat?'on':''}" data-c="${esc(c)}">${esc(c)}</button>`).join('');
+ document.getElementById('progList').innerHTML=G.filter(x=>cat==='ทั้งหมด'||x.cat===cat).map(x=>`
+ <div class="card" style="${x.example?'opacity:.6':''}"><div class="ic" style="font-size:30px">${esc(x.icon)}</div>
+ <h3>${esc(x.name)} <span class="pill" style="font-size:11px">${esc(x.cat)}</span></h3><p>${esc(x.desc)}</p>
+ <div style="margin-top:8px">${(x.tech||[]).map(t=>`<span class="pill">${esc(t)}</span>`).join('')}</div>
+ ${x.download?`<a class="dl" href="${esc(x.download)}">⬇ ดาวน์โหลด</a>`:''}${x.demo?`<a class="dl alt" href="${esc(x.demo)}">▶ Demo</a>`:''}</div>`).join('');}
+document.getElementById('catBar').addEventListener('click',e=>{if(e.target.dataset.c){cat=e.target.dataset.c;drawProg();}});drawProg();
+// ผลงานที่ VPS ส่งผ่าน n8n Webhook (โฟลเดอร์ works/)
+fetch('./works/works.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():[]).then(w=>{
+ if(!Array.isArray(w)||!w.length)return;const have=new Set(G.map(x=>x.name));
+ w.filter(x=>x&&x.name&&!have.has(x.name)).reverse().forEach(x=>G.unshift({icon:x.icon||'🧩',name:x.name,cat:x.cat||'ส่งผ่าน n8n',desc:x.desc||'',tech:x.tech||(x.date?['เพิ่มเมื่อ '+x.date]:[]),download:x.download||'',demo:(x.url||'').replace('https://jkpandora.github.io/','')}));
+ document.getElementById('nProg').textContent=G.filter(x=>!x.example).length;drawProg();}).catch(()=>{});
+// ผลงานที่ส่งผ่าน n8n Webhook จะถูกเก็บไว้ใน assets/works.json
+fetch('./assets/works.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():[]).then(w=>{
+ if(!Array.isArray(w)||!w.length)return;const have=new Set(G.map(x=>x.name));
+ w.filter(x=>!have.has(x.name)).reverse().forEach(x=>G.unshift(x));
+ document.getElementById('nProg').textContent=G.filter(x=>!x.example).length;drawProg();}).catch(()=>{});
+document.getElementById('addForm').addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.target),o={};
+ for(const [k,v] of f)o[k]=v.trim();o.tech=o.tech?o.tech.split(',').map(t=>t.trim()).filter(Boolean):[];
+ document.getElementById('codeOut').textContent='  '+JSON.stringify(o,null,0)+',';});
+document.getElementById('copyBtn').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(document.getElementById('codeOut').textContent);document.getElementById('copyMsg').textContent='คัดลอกแล้ว ✓';}catch(e){document.getElementById('copyMsg').textContent='Copy ไม่ได้ ให้เลือกข้อความแล้ว Ctrl+C';}});
+</script>
+</body>
+</html>

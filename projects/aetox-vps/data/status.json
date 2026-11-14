@@ -1,0 +1,2 @@
+{"updated_at":"2026-11-14T16:00:00+07:00","containers":{"running":17,"total":17},"restore_test":"PASS","disk_pct":5,"backup_age_h":13,"issues":[],"departments":[],
+"ai":{"summary":"ระบบทำงานปกติทั้งหมด container 17/17 ทำงาน ทดสอบกู้คืนผ่าน (ข้อมูลตัวอย่าง)","highlights":["Watchdog ตรวจทุก 1 นาที","Backup ล่าสุดอายุ 13 ชม.","ทดสอบกู้คืน SurrealDB ผ่าน"],"next":"สะสมหลักฐานให้แผนกที่ยังเป็น NEED_ACTION"}}

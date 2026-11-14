@@ -1,0 +1,265 @@
+{
+  "name": "JK Pandora Web - AI วิเคราะห์ + อัปผลงานขึ้นเว็บอัตโนมัติ 24 ชม.",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "name": "ทุก 30 นาที",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "t30"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "triggerAtHour": 8,
+              "triggerAtMinute": 17
+            }
+          ]
+        }
+      },
+      "name": "รายงานประจำวัน 08:17",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        220
+      ],
+      "id": "tday"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "mlive",
+              "name": "mode",
+              "value": "live",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "โหมด live",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        0
+      ],
+      "id": "mlive"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "mdaily",
+              "name": "mode",
+              "value": "daily",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "โหมด daily",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        220
+      ],
+      "id": "mdaily"
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "=cd /data/cloud_1tb/jkpandora.github.io && git pull -q --rebase; MODE={{ $json.mode }} LANG=C.UTF-8 PYTHONIOENCODING=utf-8 python3 tools/ai_publish.py",
+        "cwd": "/data/cloud_1tb/jkpandora.github.io"
+      },
+      "name": "เก็บสถานะ + AI วิเคราะห์ + อัปเว็บ (SSH)",
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        460,
+        100
+      ],
+      "id": "run",
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "",
+          "name": "VPS SSH Key (n8n)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const out = $input.first().json.stdout || '';\nreturn [{ json: JSON.parse(out.trim().split('\\n').pop()) }];"
+      },
+      "name": "อ่านผล",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        100
+      ],
+      "id": "parse"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.notify }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "ต้องแจ้ง Telegram?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        900,
+        100
+      ],
+      "id": "if"
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "=cd /data/cloud_1tb/aetox-harness && set -a && . ./.env && set +a && echo '{{ $json.msg_b64 }}' | base64 -d > /tmp/web_msg.txt && echo 'https://jkpandora.github.io/projects/aetox-vps/' >> /tmp/web_msg.txt && curl -s -X POST \"https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage\" -d chat_id=\"$TELEGRAM_CHAT_ID\" --data-urlencode text@/tmp/web_msg.txt",
+        "cwd": "/data/cloud_1tb/aetox-harness"
+      },
+      "name": "แจ้ง Telegram JKth01",
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        0
+      ],
+      "id": "tg",
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "",
+          "name": "VPS SSH Key (n8n)"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "ทุก 30 นาที": {
+      "main": [
+        [
+          {
+            "node": "โหมด live",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "รายงานประจำวัน 08:17": {
+      "main": [
+        [
+          {
+            "node": "โหมด daily",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "โหมด live": {
+      "main": [
+        [
+          {
+            "node": "เก็บสถานะ + AI วิเคราะห์ + อัปเว็บ (SSH)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "โหมด daily": {
+      "main": [
+        [
+          {
+            "node": "เก็บสถานะ + AI วิเคราะห์ + อัปเว็บ (SSH)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "เก็บสถานะ + AI วิเคราะห์ + อัปเว็บ (SSH)": {
+      "main": [
+        [
+          {
+            "node": "อ่านผล",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "อ่านผล": {
+      "main": [
+        [
+          {
+            "node": "ต้องแจ้ง Telegram?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ต้องแจ้ง Telegram?": {
+      "main": [
+        [
+          {
+            "node": "แจ้ง Telegram JKth01",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Bangkok"
+  },
+  "active": false
+}

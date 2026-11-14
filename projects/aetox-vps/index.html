@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aetox VPS Ops</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b1020;--panel:#121a2f;--line:#22304f;--ink:#e6ecff;--mut:#8b9bc4;--acc:#5eead4;--acc2:#818cf8;--ok:#34d399;--warn:#fbbf24;--bad:#f87171}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans Thai',system-ui,sans-serif;line-height:1.65}
+code,pre,.mono{font-family:'JetBrains Mono',monospace}
+a{color:var(--acc)}
+nav{position:sticky;top:0;z-index:9;background:rgba(11,16,32,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .in{max-width:1120px;margin:auto;display:flex;gap:18px;align-items:center;padding:12px 20px;overflow-x:auto;white-space:nowrap}
+nav b{color:var(--acc);margin-right:10px}nav a{color:var(--mut);text-decoration:none;font-size:14px}nav a:hover{color:var(--ink)}
+.wrap{max-width:1120px;margin:auto;padding:0 20px}
+header{padding:80px 0 50px;background:radial-gradient(800px 400px at 20% 0%,rgba(129,140,248,.25),transparent),radial-gradient(600px 300px at 90% 20%,rgba(94,234,212,.15),transparent)}
+.pill{display:inline-block;padding:4px 12px;border:1px solid var(--line);border-radius:99px;font-size:13px;color:var(--mut);margin:0 6px 6px 0}
+.pill.live{color:var(--ok);border-color:rgba(52,211,153,.4)}
+h1{font-size:clamp(34px,5vw,56px);line-height:1.15;margin:16px 0}
+h1 span{background:linear-gradient(90deg,var(--acc),var(--acc2));-webkit-background-clip:text;color:transparent}
+h2{font-size:28px;margin:0 0 6px}.sub{color:var(--mut);margin:0 0 26px}
+section{padding:56px 0;border-top:1px solid var(--line)}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+.card h3{margin:0 0 6px;font-size:17px}.card p{margin:0;color:var(--mut);font-size:14.5px}
+.stat{font-size:34px;font-weight:700;color:var(--acc)}
+.flow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.node{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-width:150px}
+.node small{display:block;color:var(--mut);font-size:12px}
+.node.ai{border-color:var(--acc2);box-shadow:0 0 0 1px rgba(129,140,248,.3)}
+.arrow{color:var(--acc);font-size:20px}
+.depts{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.dept{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:10px;padding:12px 14px}
+.dept.PASS{border-left-color:var(--ok)}.dept.FAIL{border-left-color:var(--bad)}
+.dept .t{display:flex;justify-content:space-between;font-weight:600}
+.dept .s{font-size:12px;padding:1px 8px;border-radius:99px;background:rgba(251,191,36,.15);color:var(--warn)}
+.dept.PASS .s{background:rgba(52,211,153,.15);color:var(--ok)}
+.dept p{margin:4px 0 0;color:var(--mut);font-size:13.5px}
+.bar{height:12px;border-radius:99px;overflow:hidden;display:flex;background:var(--line);margin:8px 0 22px}
+.filters button{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:99px;padding:6px 14px;margin:0 6px 14px 0;cursor:pointer;font-family:inherit}
+.filters button.on{border-color:var(--acc);color:var(--acc)}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-bottom:10px;padding:0 16px}
+summary{cursor:pointer;padding:14px 0;font-weight:600}
+details p,details li{color:var(--mut);font-size:14.5px}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:6px 0 14px}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line)}th{color:var(--mut);font-weight:500}
+.lesson{color:var(--acc)}
+pre{background:#070b16;border:1px solid var(--line);border-radius:12px;padding:16px;overflow:auto;font-size:13px;color:#c7d2fe}
+.chk li{list-style:none;margin:6px 0}.chk{padding:0}
+footer{padding:30px 0 60px;color:var(--mut);font-size:13px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<nav><div class="in"><a href="../../" style="color:var(--acc)">← JK Pandora</a><b>Aetox VPS Ops</b><a href="#ai">AI วิเคราะห์</a><a href="#overview">ภาพรวม</a><a href="#flow">การทำงาน</a><a href="#n8n">n8n Supervisor</a><a href="#kpi">20 แผนก</a><a href="#incidents">บันทึกปัญหา</a><a href="#security">ความปลอดภัย</a><a href="#files">ไฟล์และคำสั่ง</a><a href="#lessons">บทเรียน</a><a href="#roadmap">แผนต่อไป</a><a href="#github">GitHub Pages</a></div></nav>
+
+<header><div class="wrap">
+<span class="pill live" id="livePill">● ใช้งานจริง</span><span class="pill" id="updated">กำลังโหลดสถานะ…</span><span class="pill">Contabo VPS 1TB</span><span class="pill">Ubuntu 24.04</span><span class="pill">เริ่ม พ.ย. 2026</span>
+<h1>ดูแล VPS ด้วย<br><span>ทีม AI 20 แผนก + n8n AI Supervisor</span></h1>
+<p class="sub" style="max-width:720px">ระบบดูแลเซิร์ฟเวอร์อัตโนมัติ ทีม AI ของ Aetox Harness ตรวจ KPI ทุกแผนก ส่วน n8n กับ Gemini ทำหน้าที่หัวหน้า คอยตรวจ วิเคราะห์ แก้ไข แล้วรายงานเข้า Telegram กลุ่ม JKth01 · เจ้าของโปรเจกต์: Jk</p>
+<div class="grid" style="margin-top:30px">
+<div class="card"><div class="stat" id="sCont">17/17</div><p>Docker container ทำงาน</p></div>
+<div class="card"><div class="stat">1 นาที</div><p>รอบตรวจของ watchdog</p></div>
+<div class="card"><div class="stat">5 นาที</div><p>รอบตรวจของ n8n Supervisor</p></div>
+<div class="card"><div class="stat" id="sRestore">PASS</div><p>ทดสอบกู้คืน SurrealDB</p></div>
+<div class="card"><div class="stat" id="sDisk">–</div><p>ดิสก์ที่ใช้ไป</p></div>
+<div class="card"><div class="stat" id="sBackup">–</div><p>อายุของ backup ล่าสุด</p></div>
+</div>
+</div></header>
+
+<section id="ai"><div class="wrap">
+<h2>🧠 AI วิเคราะห์ล่าสุด</h2><p class="sub" id="aiSub">Gemini วิเคราะห์ระบบทุก 30 นาทีผ่าน n8n แล้วอัปผลขึ้นเว็บเองตลอด 24 ชม.</p>
+<div class="grid">
+<div class="card" style="border-color:var(--acc2)"><h3>สรุป</h3><p id="aiSum">รอผลวิเคราะห์รอบแรกจาก AI…</p></div>
+<div class="card"><h3>จุดเด่นรอบนี้</h3><ul id="aiHi" style="margin:0;padding-left:18px;color:var(--mut);font-size:14.5px"><li>–</li></ul></div>
+<div class="card"><h3>สิ่งที่ควรทำต่อ</h3><p id="aiNext">–</p></div>
+</div>
+<h3 style="margin-top:26px">ประวัติการวิเคราะห์</h3>
+<div id="hist"><p class="sub">ยังไม่มีประวัติ</p></div>
+</div></section>
+
+<section id="overview"><div class="wrap">
+<h2>ภาพรวมระบบ</h2><p class="sub">ส่วนประกอบหลักบน VPS</p>
+<div class="grid">
+<div class="card"><h3>🖥️ VPS</h3><p>Ubuntu 24.04, ดิสก์ 1TB, Docker, Coolify</p></div>
+<div class="card"><h3>⚙️ บริการหลัก</h3><p>n8n, MetaTrader 5 (mt5-2, mt5-3), Open Notebook + SurrealDB, Karakeep, Browserless, File Browser</p></div>
+<div class="card"><h3>🤖 Aetox Harness</h3><p>ทีม AI 20 แผนก รันด้วย Copilot CLI ผ่าน tmux ตรวจ KPI แล้วเขียนผลลง <code>audit_kpi.md</code></p></div>
+<div class="card"><h3>🐕 watchdog.sh</h3><p>ตรวจทุก 1 นาที restart container ที่ล่ม และแจ้งเตือนเข้า Telegram</p></div>
+<div class="card"><h3>🧠 n8n AI Supervisor</h3><p>ตรวจทุก 5 นาที แก้ค่าที่ถูกเปลี่ยนกลับ ให้ Gemini วิเคราะห์และสั่งการ</p></div>
+<div class="card"><h3>💾 Backup</h3><p>Export SurrealDB ทุกวันตอน 03:00 เก็บไว้ 14 วัน และทดสอบกู้คืนทุกสัปดาห์</p></div>
+</div>
+</div></section>
+
+<section id="flow"><div class="wrap">
+<h2>ลำดับการทำงาน</h2><p class="sub">งานที่รันตามเวลา และเส้นทางการแจ้งเตือน</p>
+<div class="card" style="margin-bottom:14px"><div class="flow">
+<div class="node">cron <small>ทุก 1 นาที</small></div><span class="arrow">→</span>
+<div class="node">watchdog.sh <small>ตรวจ container</small></div><span class="arrow">→</span>
+<div class="node">restart / Telegram <small>JKth01</small></div></div></div>
+<div class="card"><div class="flow">
+<div class="node">cron <small>03:00 ทุกวัน</small></div><span class="arrow">→</span>
+<div class="node">backup_surreal.sh <small>export .surql</small></div><span class="arrow">→</span>
+<div class="node">restore_test.sh <small>ทุก 7 วัน</small></div></div></div>
+</div></section>
+
+<section id="n8n"><div class="wrap">
+<h2>n8n Workflow: AI Supervisor</h2><p class="sub">“Aetox Supervisor + AI - กำกับดูแลทีม AI 20 แผนก”</p>
+<div class="card"><div class="flow">
+<div class="node">⏱ ทุก 5 นาที <small>mode = check</small><br>📅 08:07 ทุกวัน <small>mode = summary</small></div><span class="arrow">→</span>
+<div class="node">ตรวจ + แก้อัตโนมัติ <small>SSH · Python</small></div><span class="arrow">→</span>
+<div class="node">อ่านผล <small>Code node</small></div><span class="arrow">→</span>
+<div class="node">ต้องแจ้งเตือน? <small>เมื่อสถานะเปลี่ยน / มีการแก้ / สรุป</small></div><span class="arrow">→</span>
+<div class="node ai">AI วิเคราะห์ + สั่งการ <small>Gemini 2.5 Flash · whitelist</small></div><span class="arrow">→</span>
+<div class="node">ส่ง Telegram <small>JKth01</small></div>
+</div></div>
+<h3 style="margin-top:30px">10 รายการที่ตรวจทุกรอบ</h3>
+<div class="grid">
+<div class="card"><h3>1. watchdog cron</h3><p>ต้องรันทุก 1 นาที ถ้าไม่ใช่จะตั้งกลับให้</p></div>
+<div class="card"><h3>2. Telegram chat id</h3><p>ใน .env ต้องเป็นกลุ่ม JKth01 และตั้งสิทธิ์ไฟล์เป็น 0600</p></div>
+<div class="card"><h3>3. mission.txt</h3><p>ล้างคำสั่งเก่า (5 นาที / chat id เดิม)</p></div>
+<div class="card"><h3>4. Backup</h3><p>ไฟล์ล่าสุดต้องอายุไม่เกิน 26 ชม. และใหญ่กว่า 1KB</p></div>
+<div class="card"><h3>5. Restore test</h3><p>รันใหม่ทุก 7 วัน และต้องได้ PASS</p></div>
+<div class="card"><h3>6. Containers</h3><p>ตัวที่หยุดหรือ unhealthy จะถูก restart ถ้าอยู่ในรายการที่อนุญาต</p></div>
+<div class="card"><h3>7. watchdog → Telegram</h3><p>เช็กว่าใน log ไม่มี HTTP 400 หรือส่งไม่สำเร็จ</p></div>
+<div class="card"><h3>8. Disk</h3><p>เตือนเมื่อใช้ถึง 85%</p></div>
+<div class="card"><h3>9. KPI 20 แผนก</h3><p>นับ PASS / NEED_ACTION / FAIL จาก audit_kpi.md</p></div>
+<div class="card"><h3>10. ข้อมูลเสริม</h3><p>ไฟล์ที่ยังไม่ commit และสถานะ tmux ของทีม AI</p></div>
+</div>
+<h3 style="margin-top:30px">คำสั่งที่ AI เลือกได้ (whitelist)</h3>
+<p><span class="pill mono">restart:&lt;container&gt;</span><span class="pill mono">backup</span><span class="pill mono">restore_test</span><span class="pill mono">rerun_audit (≤1 ครั้ง/6 ชม.)</span><span class="pill mono">none</span></p>
+<p class="sub">container ที่อนุญาตให้ restart: open-notebook, open-notebook-db, mt5-2, mt5-3, browserless, karakeep-web-1, karakeep-meilisearch-1, karakeep-chrome-1, cloud-1tb</p>
+</div></section>
+
+<section id="kpi"><div class="wrap">
+<h2>สถานะ 20 แผนก</h2><p class="sub" id="kpiSub">ผลตรวจรอบ 14 พ.ย. 2026</p>
+<div id="sum"></div><div class="bar" id="bar"></div>
+<div class="filters" id="filters"></div>
+<div class="depts" id="depts"></div>
+</div></section>
+
+<section id="incidents"><div class="wrap">
+<h2>บันทึกปัญหาและวิธีแก้</h2><p class="sub">14 พ.ย. 2026 · แผนก 15 watchdog จาก FAIL เป็น PASS · แผนก 20 qa-100 จาก FAIL เป็น NEED_ACTION</p>
+<details open><summary>#1 รอบตรวจของ watchdog ไม่ตรงกับ KPI (MTTD ≤ 1 นาที)</summary><p>cron ตั้งไว้ <code>*/5</code> → เปลี่ยนเป็น <code>* * * * *</code></p></details>
+<details><summary>#2 Telegram ตอบ HTTP 400 “chat not found”</summary><p>chat id ที่ใช้เป็นแชทส่วนตัว ไม่ใช่ supergroup (ต้องขึ้นต้นด้วย <code>-100</code>) → หา id ที่ถูกด้วย getUpdates แล้วแก้ใน .env</p><p class="lesson">บทเรียน: อย่าเชื่อ HTTP 400 จาก log เก่า ใส่เส้นแบ่งใน log แล้วทดสอบใหม่</p></details>
+<details><summary>#3 ทีม AI เปลี่ยนค่าที่แก้แล้วกลับเป็นแบบเดิม</summary><p>ต้นเหตุคือ mission.txt ยังมีคำสั่งเก่า → แก้ mission.txt (เก็บสำรองไว้เป็น .bak) แล้วให้ n8n คอยเฝ้าทุก 5 นาที</p><p class="lesson">⭐ ต้องแก้ที่ต้นทางคำสั่ง ไม่ใช่แค่ปลายทาง</p></details>
+<details><summary>#4 ไม่มี Git และไม่มีหลักฐาน Backup/Restore</summary><p>รัน git init ใส่ .env และ log ไว้ใน .gitignore แล้ว commit ไป 3 ครั้ง</p></details>
+<details><summary>#5 กู้คืน SurrealDB ไม่ผ่าน (แก้ไป 5 ชั้น)</summary>
+<table><tr><th>#</th><th>Error</th><th>วิธีแก้</th></tr>
+<tr><td>1</td><td>field 'in' already exists</td><td>ใส่ OVERWRITE ให้ DEFINE FIELD</td></tr>
+<tr><td>2</td><td>embedding[*] already exists</td><td>ใส่ OVERWRITE ให้ทุกคำสั่ง DEFINE</td></tr>
+<tr><td>3</td><td>docker run requires 1 argument</td><td>ย้ายคำสั่งไปไว้ในไฟล์ restore_test.sh</td></tr>
+<tr><td>4</td><td>Parse error บรรทัด 393</td><td>กรองบรรทัด log INFO ออกจากไฟล์ backup</td></tr>
+<tr><td>5</td><td>PASS หลอก</td><td>ถ้าไม่มีไฟล์หรือไฟล์ว่าง ให้ออกผลเป็น FAIL</td></tr>
+<tr><td>✅</td><td colspan="2">restore_test=PASS (32K)</td></tr></table>
+<p class="lesson">⭐ ต้องเช็กว่าไฟล์ backup มีข้อมูลจริงและกู้คืนได้จริง</p></details>
+<details><summary>#6 n8n เชื่อมต่อ SSH เข้า VPS ไม่ได้</summary><p>VPS ปิดการล็อกอินด้วยรหัสผ่าน → สร้าง key ให้ n8n โดยเฉพาะ · IP gateway ของ Docker ใช้ไม่ได้ → เปลี่ยนไปใช้ IP ภายในของ VPS · เพิ่ม IP ลงใน <code>from=</code> และเปลี่ยน Credential เป็นแบบ Private Key</p></details>
+<details><summary>#7 AI อ่านภาษาไทยไม่ได้ (ascii codec)</summary><p>เติม <code>LANG=C.UTF-8 PYTHONIOENCODING=utf-8</code> หน้าคำสั่ง python3</p></details>
+<details><summary>#8 แจ้งเตือนหลอกจาก log เก่า</summary><p>เก็บ log เก่าเป็น watchdog.log.old-YYYY-MM-DD แล้วเริ่มไฟล์ใหม่</p></details>
+</div></section>
+
+<section id="security"><div class="wrap">
+<h2>ความปลอดภัย</h2><p class="sub">เสร็จแล้ว 6 รายการ · ค้างอยู่ 5 รายการ</p>
+<div class="grid">
+<div class="card"><h3 style="color:var(--ok)">✅ เสร็จแล้ว</h3><ul class="chk">
+<li>✅ .env ตั้งสิทธิ์ 0600 และไม่อยู่ใน Git</li><li>✅ SSH ล็อกอินด้วย key เท่านั้น</li><li>✅ key ของ n8n จำกัด IP ด้วย from=</li><li>✅ พอร์ต SurrealDB ไม่เปิดออกอินเทอร์เน็ต</li><li>✅ AI สั่งงานได้เฉพาะคำสั่งใน whitelist</li><li>✅ rerun_audit ไม่เกิน 1 ครั้ง/6 ชม.</li></ul></div>
+<div class="card"><h3 style="color:var(--warn)">⏳ ค้างอยู่</h3><ul class="chk">
+<li>⏳ Revoke Telegram Bot Token</li><li>⏳ เปลี่ยนรหัสผ่าน SurrealDB (root/root)</li><li>⏳ ให้ n8n ใช้ HTTPS</li><li>⏳ ลดสิทธิ์ copilot --allow-all ที่รันด้วย root</li><li>⏳ รีบูตเพื่อลงอัปเดต (ทำตอนตลาดปิด)</li></ul></div>
+</div>
+</div></section>
+
+<section id="files"><div class="wrap">
+<h2>ไฟล์สำคัญและคำสั่งที่ใช้บ่อย</h2><p class="sub">/data/cloud_1tb/aetox-harness/</p>
+<div class="grid">
+<pre>aetox-harness/
+├── .env              # Token, Chat ID
+├── mission.txt       # คำสั่งงานทีม AI
+├── start_agents.sh   # tmux: aetox
+├── watchdog.sh       # ทุก 1 นาที
+├── backup_surreal.sh # 03:00
+├── restore_test.sh
+└── library/logs/
+    ├── audit_kpi.md
+    ├── watchdog.log
+    ├── backup_restore_test.log
+    ├── supervisor.log
+    └── ai_orders.md</pre>
+<pre># KPI แผนก 15 และ 20
+grep -E "^\| (15|20) \|" library/logs/audit_kpi.md
+
+# ทีม AI ยังทำงานอยู่ไหม
+tmux ls; tail -c 1500 agent_run.log
+
+# backup แล้วทดสอบกู้คืน
+./backup_surreal.sh && ./restore_test.sh
+
+# คำสั่งล่าสุดจาก AI
+tail -30 library/logs/ai_orders.md</pre>
+</div>
+</div></section>
+
+<section id="lessons"><div class="wrap">
+<h2>บทเรียนสำคัญ</h2><p class="sub">Lessons Learned</p>
+<div class="grid">
+<div class="card"><h3>1. แก้ที่ต้นทางคำสั่ง</h3><p>ถ้าไม่แก้ไฟล์คำสั่งที่ agent ใช้ด้วย ทีมจะเปลี่ยนค่ากลับเป็นแบบเดิม</p></div>
+<div class="card"><h3>2. PASS ต้องมีหลักฐาน</h3><p>เช็กว่าไฟล์มีข้อมูลจริง และมีเวลาที่อัปเดตจริง</p></div>
+<div class="card"><h3>3. log เก่าหลอกตา</h3><p>ใส่เส้นแบ่งก่อนทดสอบทุกครั้ง</p></div>
+<div class="card"><h3>4. AI ต้องอยู่ใน whitelist</h3><p>ห้ามให้ AI รันคำสั่งอะไรก็ได้ด้วยสิทธิ์ root</p></div>
+<div class="card"><h3>5. ระวังภาพหน้าจอ</h3><p>ถ้า Token หลุดไปแล้ว ต้อง revoke ทันที</p></div>
+<div class="card"><h3>6. คำสั่งยาวให้เขียนเป็นสคริปต์</h3><p>วางหลายบรรทัดลง SSH ตรงๆ บรรทัดอาจซ้อนกันจนคำสั่งเสีย</p></div>
+</div>
+</div></section>
+
+<section id="roadmap"><div class="wrap">
+<h2>แผนต่อไป</h2><p class="sub">Roadmap</p>
+<ul class="chk card">
+<li>☐ Push ขึ้น GitHub (private repo) ให้แผนก doc-control ผ่าน</li>
+<li>☐ ปิดงานความปลอดภัยที่ยังค้าง</li>
+<li>☐ สะสมหลักฐานให้แผนกที่ยังเป็น NEED_ACTION (ประวัติเทรด MT5, ค่าใช้จ่าย VPS)</li>
+<li>☐ Dashboard แสดงสถานะ 20 แผนกแบบสด</li>
+<li>☑ เว็บไซต์โปรเจกต์ (หน้านี้)</li>
+</ul>
+</div></section>
+
+<section id="github"><div class="wrap">
+<h2>คู่มือสร้างเว็บไซต์ด้วย GitHub Pages</h2><p class="sub">ฟรีและเร็วที่สุด เหมาะกับเว็บหน้าเดียว Portfolio หน้าแสดงสถานะระบบ หรือเว็บแอปที่ทำงานฝั่ง Client</p>
+
+<h3>1. ขั้นตอนการสร้าง</h3>
+<div class="grid">
+<div class="card"><div class="stat">01</div><h3>สร้าง Repository</h3><p>กด New Repository ถ้าตั้งชื่อเป็น <code>jkpandora.github.io</code> จะได้ URL หลักของบัญชี จากนั้นเลือก Public แล้วกด Create</p></div>
+<div class="card"><div class="stat">02</div><h3>สร้างไฟล์บนเครื่อง</h3><p>สร้างโฟลเดอร์โปรเจกต์และไฟล์ <code>index.html</code> ซึ่ง GitHub Pages ใช้เป็นหน้าแรกเสมอ</p></div>
+<div class="card"><div class="stat">03</div><h3>Push โค้ด</h3><p>เปิด PowerShell ในโฟลเดอร์โปรเจกต์ แล้วรันคำสั่งด้านล่าง</p></div>
+<div class="card"><div class="stat">04</div><h3>เปิด Pages</h3><p>Settings → Pages → Deploy from a branch → เลือก <code>main</code> กับ <code>/ (root)</code> → Save แล้วรอ 1–2 นาที</p></div>
+</div>
+<pre>git init
+git add .
+git commit -m "Initial website commit"
+git branch -M main
+git remote add origin https://github.com/&lt;username&gt;/&lt;repo-name&gt;.git
+git push -u origin main</pre>
+<p class="sub">สิ่งที่ต้องเตรียม: บัญชี GitHub (เช่น jkpandora), Git หรือ GitHub CLI (<code>gh</code>), และ VS Code หรือ Terminal กับ Copilot CLI</p>
+
+<h3 style="margin-top:30px">2. โดเมนฟรี</h3>
+<div class="grid">
+<div class="card"><h3>🌐 โดเมนของ GitHub เอง</h3><p><code>https://jkpandora.github.io</code><br><code>https://jkpandora.github.io/&lt;repo&gt;/</code><br>ใช้ได้ฟรีตลอด และได้ SSL (https) อัตโนมัติ</p></div>
+<div class="card"><h3>🔗 เชื่อม Custom Domain</h3><p>1) ที่ DNS ของผู้ให้บริการโดเมน สร้าง CNAME ชี้ไปที่ <code>jkpandora.github.io</code> (ไม่ต้องต่อท้ายด้วยชื่อ repo)<br>2) ที่ Settings → Pages → Custom domain ใส่ชื่อโดเมน → Save → ติ๊ก Enforce HTTPS</p></div>
+</div>
+<table><tr><th>บริการ</th><th>ตัวอย่าง</th><th>วิธีขอ</th></tr>
+<tr><td>is-a.dev</td><td class="mono">jkpandora.is-a.dev</td><td>Fork <code>is-a-dev/register</code> เพิ่มไฟล์ JSON แล้วเปิด PR</td></tr>
+<tr><td>Open Domains</td><td class="mono">ชื่อ.is-cool.dev</td><td>เปิด PR ที่ <code>open-domains/register</code></td></tr>
+<tr><td>DigitalPlat</td><td class="mono">ชื่อ.us.kg / .dpdns.org</td><td>สมัครผ่านหน้าเว็บ แล้วตั้งค่า DNS/Cloudflare</td></tr>
+<tr><td>DuckDNS</td><td class="mono">ชื่อ.duckdns.org</td><td>สมัครที่ duckdns.org</td></tr>
+<tr><td>js.org</td><td class="mono">โปรเจกต์.js.org</td><td>เปิด PR ที่ <code>js-org/js.org</code> (สำหรับโปรเจกต์ JS)</td></tr></table>
+
+<h3 style="margin-top:30px">3. หลายเว็บไซต์ในบัญชีเดียว</h3>
+<table><tr><th>โปรเจกต์</th><th>Repository</th><th>ลิงก์</th></tr>
+<tr><td>เว็บหลัก / Hub รวมลิงก์</td><td class="mono">jkpandora.github.io</td><td class="mono">jkpandora.github.io/</td></tr>
+<tr><td>ระบบงานช่าง/รับเหมา</td><td class="mono">engineering-service</td><td class="mono">/engineering-service/</td></tr>
+<tr><td>MT5 / Gold EA Dashboard</td><td class="mono">xauusd-dashboard</td><td class="mono">/xauusd-dashboard/</td></tr>
+<tr><td>แจกดาวน์โหลดโปรแกรม</td><td class="mono">unimail-pro</td><td class="mono">/unimail-pro/</td></tr></table>
+<div class="grid">
+<div class="card"><h3>🧩 เลือกเทคโนโลยี</h3><p>Static (HTML/CSS/JS) อัปโหลดได้ตรงๆ · React/Vue/Vite ใช้ GitHub Actions build ให้ · Full-Stack ใช้ Coolify บน VPS ทำ Auto-Deploy</p></div>
+<div class="card"><h3>📁 ใช้ Relative Path</h3><p>ใช้ <code>./style.css</code> แทน <code>/style.css</code> ไม่อย่างนั้นรูปจะไม่ขึ้นในเว็บโปรเจกต์ย่อย</p></div>
+<div class="card"><h3>📊 โควตา</h3><p>ขนาดไม่เกิน 1 GB ต่อ repo · แบนด์วิดท์ 100 GB/เดือน</p></div>
+</div>
+
+<h3 style="margin-top:30px">4. Template และ Widget</h3>
+<div class="grid">
+<div class="card"><h3>HTML5 UP</h3><p>ดีไซน์โมเดิร์น รองรับมือถือ · เหมาะกับ Portfolio และเว็บบริการ</p></div>
+<div class="card"><h3>Start Bootstrap</h3><p>มี Landing Page, Admin Dashboard และ Resume · แก้ไขง่าย</p></div>
+<div class="card"><h3>GitHub Pages Themes</h3><p>เปลี่ยนธีมได้ใน Settings → Pages · เหมาะกับเว็บเอกสารและบล็อก</p></div>
+<div class="card"><h3>Cruip / TailGrids</h3><p>Tailwind แนว SaaS · เหมาะกับเว็บ EA และ Trading Bot</p></div>
+</div>
+<p style="margin-top:16px"><span class="pill">📈 TradingView Widgets: กราฟทอง/Forex</span><span class="pill">🎨 Uiverse.io / Tailwind UI</span><span class="pill">💬 Elfsight / GetButton: ปุ่ม LINE</span><span class="pill">🏷️ Shields.io Badges</span><span class="pill">👀 HitCount / Visitor Badge</span></p>
+<p class="sub">หมายเหตุ: Widget ที่โหลดจากเว็บภายนอกจะทำงานเมื่อเว็บอยู่บน GitHub Pages จริงเท่านั้น ในหน้าตัวอย่างนี้จะไม่ทำงาน</p>
+</div></section>
+
+<footer><div class="wrap">Aetox VPS Ops · โดย Jk · อัปเดต 14 พ.ย. 2026</div></footer>
+
+<script>
+let D=[[1,"ต้อนรับ","NEED_ACTION","ไม่มีข้อมูลวัดการส่งต่องาน"],[2,"ผู้ช่วย","PASS","ส่งสรุปรอบนี้สำเร็จ"],[3,"หัวหน้าทีม","NEED_ACTION","ไม่มีเวลาเฉลี่ยในการปิดเคส"],[4,"ผู้บริหาร","NEED_ACTION","ไม่มีข้อมูลเสถียรภาพหลังอนุมัติ"],[5,"HR","NEED_ACTION","ไม่มี baseline การลดข้อผิดพลาด"],[6,"ตรวจสอบ","NEED_ACTION","หลักฐานรายสัปดาห์/บัญชียังไม่ครบ"],[7,"โครงสร้างพื้นฐาน","NEED_ACTION","ไม่มีประวัติ uptime"],[8,"sys-admin","PASS","endpoints ตอบภายใน 1 วินาที"],[9,"ซ่อมบำรุง","NEED_ACTION","ไม่มีประวัติ PM/MTTR"],[10,"DBA","NEED_ACTION","ยังไม่ได้ทดสอบ query/integrity"],[11,"สำรอง/กู้คืน","NEED_ACTION","ยังยืนยัน backup รายวันไม่ได้"],[12,"ความปลอดภัย","NEED_ACTION","ยังไม่สแกน secret ทั้ง repo"],[13,"ทำความสะอาด","PASS","พื้นที่ว่าง 95% และจัดโฟลเดอร์ครบ"],[14,"operations","NEED_ACTION","ไม่มีสถิติ workflow/queue"],[15,"watchdog","PASS","cron 1 นาที และทดสอบแจ้งเตือนผ่าน"],[16,"quant-ops","NEED_ACTION","ยังไม่ได้ตรวจสัญญาณ/ออเดอร์"],[17,"deepresearch","NEED_ACTION","ไม่มีตัวอย่าง incident"],[18,"เอกสาร/GitHub","NEED_ACTION","ยังไม่มี remote และยังยืนยัน backup ไม่ครบ"],[19,"accounting","NEED_ACTION","ไม่มีข้อมูลต้นทุน/P&L"],[20,"QA-100","NEED_ACTION","หลักฐาน KPI บางส่วนยังขาด"]];
+let f='ALL';
+function draw(){const c={PASS:0,NEED_ACTION:0,FAIL:0};D.forEach(d=>c[d[2]]=(c[d[2]]||0)+1);
+document.getElementById('sum').innerHTML=`<span class="pill" style="color:var(--ok)">PASS ${c.PASS}</span><span class="pill" style="color:var(--warn)">NEED_ACTION ${c.NEED_ACTION}</span><span class="pill" style="color:var(--bad)">FAIL ${c.FAIL}</span>`;
+const n=D.length||1;document.getElementById('bar').innerHTML=`<div style="width:${c.PASS*100/n}%;background:var(--ok)"></div><div style="width:${c.NEED_ACTION*100/n}%;background:var(--warn)"></div><div style="width:${c.FAIL*100/n}%;background:var(--bad)"></div>`;
+document.getElementById('depts').innerHTML=D.filter(d=>f==='ALL'||d[2]===f).map(d=>`<div class="dept ${d[2]}"><div class="t"><span>${d[0]}. ${d[1]}</span><span class="s">${d[2]}</span></div><p>${d[3]}</p></div>`).join('');
+document.getElementById('filters').innerHTML=['ALL','PASS','NEED_ACTION','FAIL'].map(x=>`<button class="${x===f?'on':''}" data-f="${x}">${x==='ALL'?'ทั้งหมด':x}</button>`).join('');}
+document.getElementById('filters').addEventListener('click',e=>{if(e.target.dataset.f){f=e.target.dataset.f;draw();}});draw();
+// ===== ระบบเรียลไทม์: ดึงไฟล์ data/status.json ที่ VPS ส่งขึ้นมาทุก 5 นาที =====
+const set=(id,v)=>{const el=document.getElementById(id);if(el&&v!==undefined&&v!==null)el.textContent=v;};
+async function loadStatus(){
+  try{
+    const r=await fetch('./data/status.json?t='+Date.now(),{cache:'no-store'});
+    if(!r.ok)throw 0; const s=await r.json();
+    if(s.containers)set('sCont',s.containers.running+'/'+s.containers.total);
+    set('sRestore',s.restore_test);
+    if(s.disk_pct!=null)set('sDisk',s.disk_pct+'%');
+    if(s.backup_age_h!=null)set('sBackup',s.backup_age_h+' ชม.');
+    if(Array.isArray(s.departments)&&s.departments.length){D=s.departments.map(d=>[d.no,d.name,d.status,d.note||'']);draw();}
+    if(s.ai){set('aiSum',s.ai.summary||'–');set('aiNext',s.ai.next||'–');
+      if((s.ai.highlights||[]).length)document.getElementById('aiHi').innerHTML=s.ai.highlights.map(x=>`<li>${x.replace(/</g,'&lt;')}</li>`).join('');}
+    const t=new Date(s.updated_at), mins=Math.round((Date.now()-t)/60000);
+    set('updated','อัปเดตล่าสุด '+t.toLocaleString('th-TH',{timeZone:'Asia/Bangkok'})+(mins>=0?' ('+mins+' นาทีที่แล้ว)':''));
+    set('kpiSub','ผลตรวจล่าสุด '+t.toLocaleString('th-TH',{timeZone:'Asia/Bangkok'}));
+    const pill=document.getElementById('livePill'), bad=(s.issues||[]).length;
+    if(mins>20){pill.textContent='● ข้อมูลไม่อัปเดต';pill.style.color='var(--warn)';}
+    else if(bad){pill.textContent='● มีปัญหา '+bad+' รายการ';pill.style.color='var(--bad)';}
+    else{pill.textContent='● LIVE · ปกติทั้งหมด';pill.style.color='var(--ok)';}
+  }catch(e){set('updated','แสดงข้อมูลรอบล่าสุดที่บันทึกไว้');}
+}
+loadStatus(); setInterval(loadStatus,60000);
+async function loadHist(){try{const r=await fetch('./data/history.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const h=await r.json();
+if(h.length)document.getElementById('hist').innerHTML=h.slice(0,10).map(x=>`<details><summary>${new Date(x.t).toLocaleString('th-TH',{timeZone:'Asia/Bangkok'})} ${x.mode==='daily'?'· 📅 รายงานประจำวัน':''} · container ${x.containers} · ปัญหา ${x.issues}</summary><p>${(x.summary||'').replace(/</g,'&lt;')}</p></details>`).join('');}catch(e){}}
+loadHist(); setInterval(loadHist,60000);
+
+</script>
+</body>
+</html>

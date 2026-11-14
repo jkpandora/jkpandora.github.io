@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>n8n Automation · JK Pandora</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/theme.css"></head><body>
+<nav><div class="in"><a href="../" style="color:var(--acc)">← JK Pandora</a><b>n8n Automation</b></div></nav>
+<header><div class="wrap"><span class="pill live">● ใช้งานจริง</span>
+<h1>ระบบอัตโนมัติด้วย<br><span>n8n + AI</span></h1>
+<p class="sub">workflow ที่สร้างร่วมกับ Claude ดาวน์โหลดไฟล์ JSON ไป import เข้า n8n ได้เลย</p></div></header>
+<section><div class="wrap"><div class="grid">
+<div class="card"><h3>🛡️ Aetox Supervisor + AI</h3><p>ตั้งเวลาทุก 5 นาที → SSH ตรวจและแก้อัตโนมัติ → Gemini วิเคราะห์และสั่งการ (เฉพาะคำสั่งใน whitelist) → Telegram</p><p style="margin-top:10px"><a href="aetox-supervisor-ai.json">⬇ aetox-supervisor-ai.json</a> · <a href="../projects/aetox-vps/">ดูระบบ</a></p></div>
+<div class="card"><h3>🌐 JK Pandora Web AI Publisher</h3><p>ตั้งเวลาทุก 30 นาที → เก็บสถานะ → Gemini สรุปผล → git push ขึ้นเว็บ → แจ้ง Telegram ถ้าล้มเหลว</p><p style="margin-top:10px"><a href="jkpandora-web-ai.json">⬇ jkpandora-web-ai.json</a> · <a href="../projects/aetox-vps/#ai">ดูผล AI</a></p></div>
+<div class="card" style="border-color:var(--acc2)"><h3>📥 รับผลงานเข้าเว็บ (Webhook)</h3><p>POST ผลงานเข้ามา → ตรวจข้อมูล → สแกนรหัสลับและ IP → Gemini เขียนคำอธิบาย → push GitHub → แจ้ง Telegram → ส่งลิงก์ผลงานกลับไปให้ผู้ส่ง</p><p style="margin-top:10px"><a href="jkpandora-submit-work.json">⬇ jkpandora-submit-work.json</a></p></div>
+</div>
+<p class="sub" style="margin-top:20px">หมายเหตุ: ในไฟล์ไม่มี credential และ chat id หลังจาก import ให้ใส่ค่าของคุณเอง</p>
+</div></section>
+<footer><div class="wrap">JK Pandora</div></footer></body></html>
