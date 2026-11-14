@@ -77,3 +77,8 @@ workflow: `n8n/jkpandora-submit-work.json` · คู่มือสำหรั�
 5. ทดสอบ: `.\tools\submit_work.ps1 -Name "ทดสอบ" -Desc "ทดสอบระบบ" -NoPolish` ต้องได้ `ok : True` และมีข้อความเข้า Telegram
 
 ความปลอดภัย: ก่อนขึ้นเว็บ ระบบสแกน token, API key, private key, chat id และ IP ถ้าเจอจะปฏิเสธงานนั้น · ตอนนี้ n8n ยังเป็น http แนะนำให้เปิด HTTPS ก่อนส่งงานจากนอกเครื่อง
+
+## โหมดดูได้อย่างเดียว (Read-only)
+- หน้าเว็บสาธารณะไม่มีฟอร์มหรือปุ่มแก้ไข ผู้เข้าชมทำได้แค่ดู
+- เพิ่มหรือแก้ผลงานได้ 2 ทาง: (1) เจ้าของ push ขึ้น GitHub หรือ (2) ส่งผ่าน n8n Webhook ที่ต้องมีรหัส
+- ตั้งค่า GitHub: repo → Settings → Collaborators ต้องไม่มีใครนอกจากเจ้าของ · Branches → Add rule ให้ `main` → ติ๊ก Restrict deletions และ Block force pushes

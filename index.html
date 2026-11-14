@@ -7,8 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./assets/theme.css">
 <style>
-#addForm label{display:flex;flex-direction:column;gap:4px;color:var(--mut);font-size:13px}
-#addForm input,#addForm select{background:#070b16;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:8px 10px;font-family:inherit}
 .fbtn,.chip{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:99px;padding:6px 14px;cursor:pointer;font-family:inherit;margin:0 6px 6px 0}
 .chip.on,.fbtn:hover{border-color:var(--acc);color:var(--acc)}
 .dl{display:inline-block;margin:10px 8px 0 0;padding:6px 14px;border-radius:99px;background:var(--acc);color:#04201b;text-decoration:none;font-weight:600;font-size:13px}
@@ -16,7 +14,7 @@
 </style>
 </head>
 <body>
-<nav><div class="in"><b>JK Pandora</b><a href="#projects">ผลงาน</a><a href="#programs">โปรแกรม</a><a href="#add">เพิ่มผลงาน</a><a href="#about">เกี่ยวกับ</a><a href="#stack">เครื่องมือ</a></div></nav>
+<nav><div class="in"><b>JK Pandora</b><a href="#projects">ผลงาน</a><a href="#programs">โปรแกรม</a><a href="#about">เกี่ยวกับ</a><a href="#stack">เครื่องมือ</a></div></nav>
 
 <header><div class="wrap">
 <span class="pill live">● AI Course Showcase</span><span class="pill">jkpandora.github.io</span>
@@ -39,21 +37,6 @@
 <h2>โปรแกรมที่สร้างด้วย Claude</h2><p class="sub">โปรแกรมที่ทำไว้ใช้เอง ทั้งตัวอ่านไฟล์, PDF, Windows และสื่อ</p>
 <div id="catBar" style="margin-bottom:14px"></div>
 <div class="grid" id="progList"></div>
-</div></section>
-
-<section id="add"><div class="wrap">
-<h2>เครื่องมือเพิ่มผลงาน</h2><p class="sub">กรอกข้อมูล → กดสร้างโค้ด → Copy ไปวางใน <code>assets/projects.js</code> ในส่วน PROGRAMS → push ขึ้น GitHub</p>
-<form class="card" id="addForm" style="display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
-<label>ไอคอน<input name="icon" value="🧩"></label>
-<label>ชื่อโปรแกรม<input name="name" required></label>
-<label>หมวด<select name="cat"><option>เครื่องมือ</option><option>เอกสาร/PDF</option><option>Windows</option><option>สื่อ/มัลติมีเดีย</option><option>เทรด</option><option>อื่นๆ</option></select></label>
-<label>เทคโนโลยี (คั่นด้วย ,)<input name="tech" placeholder="Python, Claude API"></label>
-<label style="grid-column:1/-1">คำอธิบาย<input name="desc"></label>
-<label>ลิงก์ดาวน์โหลด<input name="download" placeholder="https://github.com/jkpandora/.../releases"></label>
-<label>ลิงก์ Demo<input name="demo" placeholder="(ถ้ามี)"></label>
-<div style="grid-column:1/-1"><button class="fbtn" type="submit">สร้างโค้ด</button> <button class="fbtn" type="button" id="copyBtn">Copy</button> <span id="copyMsg" class="sub"></span></div>
-</form>
-<pre id="codeOut">// โค้ดจะขึ้นตรงนี้</pre>
 </div></section>
 
 <section id="about"><div class="wrap">
@@ -103,10 +86,6 @@ fetch('./assets/works.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.jso
  if(!Array.isArray(w)||!w.length)return;const have=new Set(G.map(x=>x.name));
  w.filter(x=>!have.has(x.name)).reverse().forEach(x=>G.unshift(x));
  document.getElementById('nProg').textContent=G.filter(x=>!x.example).length;drawProg();}).catch(()=>{});
-document.getElementById('addForm').addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.target),o={};
- for(const [k,v] of f)o[k]=v.trim();o.tech=o.tech?o.tech.split(',').map(t=>t.trim()).filter(Boolean):[];
- document.getElementById('codeOut').textContent='  '+JSON.stringify(o,null,0)+',';});
-document.getElementById('copyBtn').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(document.getElementById('codeOut').textContent);document.getElementById('copyMsg').textContent='คัดลอกแล้ว ✓';}catch(e){document.getElementById('copyMsg').textContent='Copy ไม่ได้ ให้เลือกข้อความแล้ว Ctrl+C';}});
 </script>
 </body>
 </html>
