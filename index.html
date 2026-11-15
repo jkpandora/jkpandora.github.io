@@ -58,7 +58,7 @@
   <div class="card"><p>อายุ Backup ล่าสุด</p><div class="stat" id="vBak">–</div></div>
  </div>
  <div class="charts">
-  <div class="card"><h3>พื้นที่จัดเก็บ (1 TB)</h3><div class="cw"><canvas id="cDisk"></canvas></div></div>
+  <div class="card"><h3>ข้อมูลใน VPS แบ่งตามประเภท <small id="vDiskSub" style="font-weight:400;opacity:.7"></small></h3><div class="cw"><canvas id="cDisk"></canvas></div></div>
   <div class="card"><h3>โปรแกรมที่รันบน VPS <small id="vContSub" style="font-weight:400;opacity:.7"></small></h3><div class="cw"><canvas id="cCont"></canvas></div></div>
   <div class="card"><h3>KPI ทีม AI 20 แผนก</h3><div class="cw"><canvas id="cKpi"></canvas></div></div>
  </div>
@@ -181,7 +181,9 @@ Promise.all([J('./data/vps.json'),J('./projects/aetox-vps/data/status.json')]).t
  set('vDisk',pct+'%');set('vRestore',s.restore_test||'–',s.restore_test==='PASS'?'pos':'neg');
  set('vBak',s.backup_age_h!=null?s.backup_age_h+' ชม.':'–');
  const used=Math.round(tot*pct/100);
- donut('cDisk',['ใช้แล้ว '+used+' GB','ว่าง '+(tot-used)+' GB'],[used,tot-used],[C.acc2,'#1b2747']);
+ if(v.disk_breakdown){const b=v.disk_breakdown;document.getElementById('vDiskSub').textContent='· ใช้ '+v.disk_used_gb+' GB / ว่าง '+v.disk_free_gb+' GB';
+  donut('cDisk',b.map(x=>x[0]+' '+x[1]+' GB'),b.map(x=>x[1]),['#38bdf8',C.acc2,'#64748b',C.warn,C.ok,'#f472b6','#fb923c']);}
+ else donut('cDisk',['ใช้แล้ว '+used+' GB','ว่าง '+(tot-used)+' GB'],[used,tot-used],[C.acc2,'#1b2747']);
  {const g={};(v.services||[]).forEach(x=>{(g[x[1]]=g[x[1]]||[]).push(x[0])});const ks=Object.keys(g);
   const pal=[C.acc2,C.ok,C.warn,'#38bdf8','#f472b6','#a78bfa','#34d399','#fb923c','#94a3b8'];
   document.getElementById('vContSub').textContent='· Container ทำงาน '+ct.running+'/'+ct.total;
