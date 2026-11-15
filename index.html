@@ -59,7 +59,7 @@
  </div>
  <div class="charts">
   <div class="card"><h3>พื้นที่จัดเก็บ (1 TB)</h3><div class="cw"><canvas id="cDisk"></canvas></div></div>
-  <div class="card"><h3>สถานะ Container</h3><div class="cw"><canvas id="cCont"></canvas></div></div>
+  <div class="card"><h3>โปรแกรมที่รันบน VPS <small id="vContSub" style="font-weight:400;opacity:.7"></small></h3><div class="cw"><canvas id="cCont"></canvas></div></div>
   <div class="card"><h3>KPI ทีม AI 20 แผนก</h3><div class="cw"><canvas id="cKpi"></canvas></div></div>
  </div>
  <div class="card"><h3>บริการที่ใช้งานบน VPS</h3><div id="vSvc" class="svc"></div></div>
@@ -182,7 +182,13 @@ Promise.all([J('./data/vps.json'),J('./projects/aetox-vps/data/status.json')]).t
  set('vBak',s.backup_age_h!=null?s.backup_age_h+' ชม.':'–');
  const used=Math.round(tot*pct/100);
  donut('cDisk',['ใช้แล้ว '+used+' GB','ว่าง '+(tot-used)+' GB'],[used,tot-used],[C.acc2,'#1b2747']);
- donut('cCont',['ทำงาน','หยุด/มีปัญหา'],[ct.running,ct.total-ct.running],[C.ok,C.bad]);
+ {const g={};(v.services||[]).forEach(x=>{(g[x[1]]=g[x[1]]||[]).push(x[0])});const ks=Object.keys(g);
+  const pal=[C.acc2,C.ok,C.warn,'#38bdf8','#f472b6','#a78bfa','#34d399','#fb923c','#94a3b8'];
+  document.getElementById('vContSub').textContent='· Container ทำงาน '+ct.running+'/'+ct.total;
+  if(has()){charts.cCont&&charts.cCont.destroy();charts.cCont=new Chart(document.getElementById('cCont'),{type:'doughnut',
+   data:{labels:ks.map(k=>k+' ('+g[k].length+'): '+g[k].join(', ')),datasets:[{data:ks.map(k=>g[k].length),backgroundColor:ks.map((k,i)=>pal[i%pal.length]),borderColor:'#121a2f',borderWidth:3}]},
+   options:{maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:8,font:{size:11}}},
+    tooltip:{callbacks:{label:c=>' '+g[ks[c.dataIndex]].join(', ')}}}}});}}
  let k=v.kpi||{PASS:0,NEED_ACTION:0,FAIL:0};
  if(Array.isArray(s.departments)&&s.departments.length){k={PASS:0,NEED_ACTION:0,FAIL:0};s.departments.forEach(d=>k[d.status]=(k[d.status]||0)+1);}
  donut('cKpi',['PASS','NEED_ACTION','FAIL'],[k.PASS,k.NEED_ACTION,k.FAIL],[C.ok,C.warn,C.bad]);
