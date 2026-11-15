@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-16T02:36:54+07:00",
+ "updated_at": "2026-11-16T03:09:02+07:00",
  "containers": {
   "running": 17,
   "total": 17
@@ -131,7 +131,7 @@
   }
  ],
  "ai": {
-  "summary": "AI ไม่ตอบในรอบนี้",
+  "summary": "AI ไม่ตอบในรอบนี้ (HTTPError)",
   "highlights": [],
   "next": ""
  }
