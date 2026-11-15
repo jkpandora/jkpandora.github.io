@@ -1,2 +1,138 @@
-{"updated_at":"2026-11-14T16:00:00+07:00","containers":{"running":17,"total":17},"restore_test":"PASS","disk_pct":5,"backup_age_h":13,"issues":[],"departments":[],
-"ai":{"summary":"ระบบทำงานปกติทั้งหมด container 17/17 ทำงาน ทดสอบกู้คืนผ่าน (ข้อมูลตัวอย่าง)","highlights":["Watchdog ตรวจทุก 1 นาที","Backup ล่าสุดอายุ 13 ชม.","ทดสอบกู้คืน SurrealDB ผ่าน"],"next":"สะสมหลักฐานให้แผนกที่ยังเป็น NEED_ACTION"}}
+{
+ "updated_at": "2026-11-16T02:24:25+07:00",
+ "containers": {
+  "running": 17,
+  "total": 17
+ },
+ "restore_test": "PASS",
+ "disk_pct": 4,
+ "backup_age_h": 17,
+ "issues": [],
+ "departments": [
+  {
+   "no": 1,
+   "name": "receptionist",
+   "status": "NEED_ACTION",
+   "note": "Routing accuracy ≥98%; no routing sample was available."
+  },
+  {
+   "no": 2,
+   "name": "assistant",
+   "status": "PASS",
+   "note": "This requested startup summary was delivered to Telegram; this confirms this briefing only, not ongoing 100% timeliness."
+  },
+  {
+   "no": 3,
+   "name": "head-manager",
+   "status": "NEED_ACTION",
+   "note": "Average case closure ≤5 min; no case-timing history was available."
+  },
+  {
+   "no": 4,
+   "name": "executive",
+   "status": "NEED_ACTION",
+   "note": "Post-approval system stability ≥95%; no approved-change measurement window was available."
+  },
+  {
+   "no": 5,
+   "name": "hr-manager",
+   "status": "NEED_ACTION",
+   "note": "Reduce recurring errors ≥80%; no baseline or post-adjustment sample was available."
+  },
+  {
+   "no": 6,
+   "name": "internal-audit",
+   "status": "NEED_ACTION",
+   "note": "Weekly audit completeness 100%; historical application, accounting, and backup records were not fully reconciled."
+  },
+  {
+   "no": 7,
+   "name": "server-infra",
+   "status": "NEED_ACTION",
+   "note": "Uptime ≥99.9% and CPU/RAM ≤85%; memory and disk snapshot were within limits, but uptime history and CPU utilization were"
+  },
+  {
+   "no": 8,
+   "name": "sys-admin",
+   "status": "PASS",
+   "note": "All five requested application endpoints responded in under one second; three MT5 containers were running. Functional MT"
+  },
+  {
+   "no": 9,
+   "name": "maintenance",
+   "status": "NEED_ACTION",
+   "note": "PM on schedule 100%, MTTR ≤10 min; no PM history or timed recovery incident was verified."
+  },
+  {
+   "no": 10,
+   "name": "dba-admin",
+   "status": "NEED_ACTION",
+   "note": "Query <100ms and zero DB corruption; no query-latency or integrity checks were run."
+  },
+  {
+   "no": 11,
+   "name": "backup-dr",
+   "status": "NEED_ACTION",
+   "note": "Daily backup success 100%; restore log has three failures followed by a pass, but daily completion is unverified."
+  },
+  {
+   "no": 12,
+   "name": "security-ops",
+   "status": "NEED_ACTION",
+   "note": "[hidden] leaks = 0; `.env` is mode `0600` and ignore rules protect [hidden] patterns, but no full repository [hidden] sc"
+  },
+  {
+   "no": 13,
+   "name": "cleaner-cat",
+   "status": "PASS",
+   "note": "Free SSD ≥30%; 95.9% was free and all four required library directories exist."
+  },
+  {
+   "no": 14,
+   "name": "operations",
+   "status": "NEED_ACTION",
+   "note": "Workflow continuity ≥99.5%; no n8n execution history or queue metrics were inspected."
+  },
+  {
+   "no": 15,
+   "name": "watchdog",
+   "status": "PASS",
+   "note": "One-minute cron schedule and execution, script syntax, and Telegram test alert were verified. No controlled outage/resta"
+  },
+  {
+   "no": 16,
+   "name": "quant-ops",
+   "status": "NEED_ACTION",
+   "note": "Signals 100%, order errors 0%; three MT5 containers were running, but signals/orders were not audited. No live trading p"
+  },
+  {
+   "no": 17,
+   "name": "deepresearch",
+   "status": "NEED_ACTION",
+   "note": "First-pass issue resolution ≥90%; no incident sample was available."
+  },
+  {
+   "no": 18,
+   "name": "doc-control",
+   "status": "NEED_ACTION",
+   "note": "Backup/publishing coverage 100%; GitHub `main` is reachable, but this checkout has no remote and backup completeness was"
+  },
+  {
+   "no": 19,
+   "name": "accounting",
+   "status": "NEED_ACTION",
+   "note": "Zero calculation variance; VPS/API costs and net P&L were not available."
+  },
+  {
+   "no": 20,
+   "name": "qa-100",
+   "status": "NEED_ACTION",
+   "note": "Zero escaped defects; multiple KPI evidence sets remain unverified, so 100% sign-off is not justified."
+  }
+ ],
+ "ai": {
+  "summary": "AI ไม่ตอบในรอบนี้",
+  "highlights": [],
+  "next": ""
+ }
+}
