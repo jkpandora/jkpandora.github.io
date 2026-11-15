@@ -68,7 +68,27 @@ status = {'updated_at': now.isoformat(timespec='seconds'), 'containers': {'runni
           'issues': ['x'] * len(issues), 'departments': deps, 'ai': ai}
 json.dump(status, open(D + '/status.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 json.dump(hist, open(hp, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
-out = sh('cd ' + REPO + ' && git add projects/aetox-vps/data && git commit -q -m "AI update ' + now.strftime('%d/%m %H:%M') + '" && git push -q 2>&1 && echo PUSHED')
+# --- disk breakdown -> data/vps.json (auto) ---
+try:
+    def gb(path):
+        o = sh('timeout 150 du -sb ' + path + ' 2>/dev/null | cut -f1')
+        return round(sum(int(x) for x in o.split() if x.isdigit()) / 1e9, 2)
+    df = sh("df -B1 / | tail -1").split()
+    tot, used, free = int(df[1]) / 1e9, int(df[2]) / 1e9, int(df[3]) / 1e9
+    parts = [['Docker (โปรแกรม/อิมเมจ)', gb('/var/lib/docker')],
+             ['MT5 / ระบบเทรด', gb('/data/mt5*')],
+             ['Coolify', gb('/data/coolify')], ['n8n', gb('/data/n8n')],
+             ['ไฟล์โปรเจค (cloud_1tb)', gb('/data/cloud_1tb')],
+             ['Backup เก่า', gb('/data/vps_old_backup')]]
+    parts.insert(2, ['ระบบปฏิบัติการ + อื่นๆ', round(max(used - sum(x[1] for x in parts), 0), 2)])
+    vp = REPO + '/data/vps.json'
+    try: v = json.load(open(vp, encoding='utf-8'))
+    except Exception: v = {}
+    v.update({'disk_breakdown': [x for x in parts if x[1] > 0], 'disk_used_gb': round(used), 'disk_free_gb': round(free),
+              'disk_total_gb': round(tot), 'disk_used_pct': round(used * 100 / tot), 'updated_at': now.isoformat()})
+    json.dump(v, open(vp, 'w', encoding='utf-8'), ensure_ascii=False)
+except Exception as e: print('disk err', type(e).__name__)
+out = sh('cd ' + REPO + ' && git add projects/aetox-vps/data data/vps.json && git commit -q -m "AI update ' + now.strftime('%d/%m %H:%M') + '" && git push -q 2>&1 && echo PUSHED')
 ok = 'PUSHED' in out
 msg = '[เว็บ JK Pandora] ' + ('อัปเดตแล้ว ' if ok else 'อัปขึ้น GitHub ไม่สำเร็จ ') + now.strftime('%d/%m %H:%M') + '\n' + ai['summary']
 print(json.dumps({'pushed': ok, 'mode': MODE, 'notify': (not ok) or MODE == 'daily', 'msg_b64': base64.b64encode(msg.encode()).decode()}, ensure_ascii=False))
