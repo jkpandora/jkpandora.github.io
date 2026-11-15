@@ -30,22 +30,31 @@
 .li{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}.li span{font-size:20px}.li a{color:var(--ink);text-decoration:none}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+#dashboard{padding-top:8px}header{padding-bottom:10px!important}
+.charts.vps{grid-template-columns:1fr 1fr}.charts.vps>.card:last-child{grid-column:1/-1}
+@media(max-width:900px){.charts.vps{grid-template-columns:1fr}}
+.card h3{margin:0 0 2px;font-size:17px;letter-spacing:.2px}.cs{margin:0 0 14px;color:var(--mut);font-size:13px}
+.dz{display:grid;grid-template-columns:200px 1fr;gap:20px;align-items:center}
+@media(max-width:560px){.dz{grid-template-columns:1fr}}
+.dz .cw{height:200px}
+.lg{display:flex;flex-direction:column;gap:9px;min-width:0}
+.lg .r{display:grid;grid-template-columns:10px 1fr auto;gap:10px;align-items:center;font-size:13.5px}
+.lg .r i{width:10px;height:10px;border-radius:3px}
+.lg .r b{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lg .r em{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--mut)}
+.lg .r small{grid-column:2/4;color:var(--mut);font-size:12px;margin-top:-6px;white-space:normal}
+.lg .bar{grid-column:2/4;height:4px;border-radius:4px;background:#1b2747;overflow:hidden;margin-top:-4px}.lg .bar span{display:block;height:100%}
+</style>
 </head>
 <body>
 <nav><div class="in"><b>JK Pandora</b><a href="#dashboard">Dashboard</a><a href="#projects">ผลงาน</a><a href="#programs">โปรแกรม</a><a href="#about">เกี่ยวกับ</a><a href="#stack">เครื่องมือ</a></div></nav>
 
+
 <header><div class="wrap">
 <span class="pill live">● AI Course Showcase</span><span class="pill">jkpandora.github.io</span>
 <h1>รวมผลงานระบบ AI<br><span>ของ JK Pandora</span></h1>
-<p class="sub" style="max-width:700px">ผลงานจากคอร์ส AI ทั้งหมดรวมไว้ที่นี่ มีทั้งระบบ AI Agent ที่ดูแลเซิร์ฟเวอร์, ระบบอัตโนมัติด้วย n8n, เครื่องมือเทรด และแชทบอต แต่ละระบบมีหน้าเว็บของตัวเอง</p>
-<div class="grid" style="margin-top:30px">
-<div class="card"><div class="stat" id="nLive">0</div><p>ระบบที่ใช้งานจริง</p></div>
-<div class="card"><div class="stat" id="nSoon">0</div><p>ระบบที่กำลังพัฒนา</p></div>
-<div class="card"><div class="stat" id="nProg">0</div><p>โปรแกรมที่สร้างด้วย Claude</p></div>
-<div class="card"><div class="stat">20</div><p>แผนก AI ใน Aetox Harness</p></div>
-</div>
 </div></header>
-
 <section id="dashboard"><div class="wrap">
 <h2>Dashboard</h2><p class="sub" id="dSub">ภาพรวม 3 ระบบ · VPS · Trade · ผลงาน</p>
 <div class="tabs" id="dTabs"><button class="tab on" data-t="vps">🖥️ ระบบ VPS</button><button class="tab" data-t="trade">📈 ระบบ Trade</button><button class="tab" data-t="works">🧩 ระบบผลงาน</button></div>
@@ -57,10 +66,10 @@
   <div class="card"><p>ทดสอบกู้คืน Backup</p><div class="stat" id="vRestore">–</div></div>
   <div class="card"><p>อายุ Backup ล่าสุด</p><div class="stat" id="vBak">–</div></div>
  </div>
- <div class="charts">
-  <div class="card"><h3>ข้อมูลใน VPS แบ่งตามประเภท <small id="vDiskSub" style="font-weight:400;opacity:.7"></small></h3><div class="cw"><canvas id="cDisk"></canvas></div></div>
-  <div class="card"><h3>โปรแกรมที่รันบน VPS <small id="vContSub" style="font-weight:400;opacity:.7"></small></h3><div class="cw"><canvas id="cCont"></canvas></div></div>
-  <div class="card"><h3>KPI ทีม AI 20 แผนก</h3><div class="cw"><canvas id="cKpi"></canvas></div></div>
+ <div class="charts vps">
+  <div class="card"><h3>ข้อมูลใน VPS แบ่งตามประเภท</h3><p class="cs" id="vDiskSub"></p><div class="dz"><div class="cw"><canvas id="cDisk"></canvas></div><div class="lg" id="cDiskL"></div></div></div>
+  <div class="card"><h3>โปรแกรมที่รันบน VPS</h3><p class="cs" id="vContSub"></p><div class="dz"><div class="cw"><canvas id="cCont"></canvas></div><div class="lg" id="cContL"></div></div></div>
+  <div class="card"><h3>KPI ทีม AI 20 แผนก</h3><div class="dz"><div class="cw"><canvas id="cKpi"></canvas></div><div class="lg" id="cKpiL"></div></div></div>
  </div>
  <div class="card"><h3>บริการที่ใช้งานบน VPS</h3><div id="vSvc" class="svc"></div></div>
  <p class="sub" style="margin-top:12px"><a href="./projects/aetox-vps/">ดูรายละเอียด Aetox VPS Ops →</a></p>
@@ -75,7 +84,7 @@
  </div>
  <div class="charts two">
   <div class="card"><h3>กำไรสะสม (USD): ตามสัญญาณ vs กลับทิศ</h3><div class="cw wide"><canvas id="cEq"></canvas></div></div>
-  <div class="card"><h3>สัดส่วนออเดอร์</h3><div class="cw"><canvas id="cOrd"></canvas></div></div>
+  <div class="card"><h3>สัดส่วนออเดอร์</h3><div class="dz"><div class="cw"><canvas id="cOrd"></canvas></div><div class="lg" id="cOrdL"></div></div></div>
  </div>
  <div class="card"><h3>สรุปตามประเภทคำสั่ง</h3><div style="overflow-x:auto"><table class="tbl" id="tType"></table></div></div>
  <p class="sub" id="tNote" style="margin-top:12px"></p>
@@ -89,11 +98,21 @@
   <div class="card"><p>workflow n8n</p><div class="stat" id="wN8n">–</div></div>
  </div>
  <div class="charts two">
-  <div class="card"><h3>ผลงานแยกตามหมวด</h3><div class="cw"><canvas id="cCat"></canvas></div></div>
+  <div class="card"><h3>ผลงานแยกตามหมวด</h3><div class="dz"><div class="cw"><canvas id="cCat"></canvas></div><div class="lg" id="cCatL"></div></div></div>
   <div class="card"><h3>ผลงานล่าสุด</h3><div id="wLatest"></div></div>
  </div>
 </div>
 </div></section>
+<section id="intro" style="padding-top:10px"><div class="wrap">
+<p class="sub" style="max-width:700px">ผลงานจากคอร์ส AI ทั้งหมดรวมไว้ที่นี่ มีทั้งระบบ AI Agent ที่ดูแลเซิร์ฟเวอร์, ระบบอัตโนมัติด้วย n8n, เครื่องมือเทรด และแชทบอต แต่ละระบบมีหน้าเว็บของตัวเอง</p>
+<div class="grid" style="margin-top:30px">
+<div class="card"><div class="stat" id="nLive">0</div><p>ระบบที่ใช้งานจริง</p></div>
+<div class="card"><div class="stat" id="nSoon">0</div><p>ระบบที่กำลังพัฒนา</p></div>
+<div class="card"><div class="stat" id="nProg">0</div><p>โปรแกรมที่สร้างด้วย Claude</p></div>
+<div class="card"><div class="stat">20</div><p>แผนก AI ใน Aetox Harness</p></div>
+</div>
+</div></section>
+
 
 
 <section id="projects"><div class="wrap">
@@ -161,9 +180,16 @@ const C={acc:'#5eead4',acc2:'#818cf8',ok:'#34d399',warn:'#fbbf24',bad:'#f87171',
 const has=()=>typeof Chart!=='undefined';
 if(has()){Chart.defaults.color=C.mut;Chart.defaults.font.family="'IBM Plex Sans Thai',sans-serif";Chart.defaults.borderColor=C.line;}
 const charts={};
-function donut(id,labels,data,colors){if(!has())return;charts[id]&&charts[id].destroy();
- charts[id]=new Chart(document.getElementById(id),{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors,borderColor:'#121a2f',borderWidth:3}]},
- options:{maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:12}}}}});}
+function donut(id,labels,data,colors,o){o=o||{};const tot=data.reduce((a,b)=>a+(+b||0),0);
+ const el=document.getElementById(id+'L');
+ if(el)el.innerHTML=labels.map((l,i)=>{const pc=tot?Math.round(data[i]*1000/tot)/10:0;const d=(o.det||[])[i];
+  return `<div class="r"><i style="background:${colors[i%colors.length]}"></i><b title="${l}">${l}</b><em>${o.fmt?o.fmt(data[i]):data[i]} · ${pc}%</em>${d?`<small>${d}</small>`:''}<div class="bar"><span style="width:${pc}%;background:${colors[i%colors.length]}"></span></div></div>`}).join('');
+ if(!has())return;charts[id]&&charts[id].destroy();
+ const ctr={id:'ctr',afterDraw(c){const{ctx,chartArea:a}=c;const x=(a.left+a.right)/2,y=(a.top+a.bottom)/2;ctx.save();ctx.textAlign='center';
+  ctx.fillStyle='#e8eefc';ctx.font='600 22px "IBM Plex Sans Thai",sans-serif';ctx.fillText(o.center!=null?o.center:tot,x,y+4);
+  ctx.fillStyle='#8b98b8';ctx.font='12px "IBM Plex Sans Thai",sans-serif';ctx.fillText(o.sub||'รวม',x,y+22);ctx.restore();}};
+ charts[id]=new Chart(document.getElementById(id),{type:'doughnut',plugins:[ctr],data:{labels,datasets:[{data,backgroundColor:colors,borderColor:'#121a2f',borderWidth:3,hoverOffset:6}]},
+ options:{maintainAspectRatio:false,cutout:'70%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+(o.det&&o.det[c.dataIndex]?o.det[c.dataIndex]:c.formattedValue)}}}}});}
 const J=u=>fetch(u+'?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);
 const set=(id,v,cls)=>{const e=document.getElementById(id);if(e){e.textContent=v;if(cls)e.className='stat '+cls;}};
 const th=d=>new Date(d).toLocaleString('th-TH',{timeZone:'Asia/Bangkok',dateStyle:'medium',timeStyle:'short'});
@@ -181,16 +207,12 @@ Promise.all([J('./data/vps.json'),J('./projects/aetox-vps/data/status.json')]).t
  set('vDisk',pct+'%');set('vRestore',s.restore_test||'–',s.restore_test==='PASS'?'pos':'neg');
  set('vBak',s.backup_age_h!=null?s.backup_age_h+' ชม.':'–');
  const used=Math.round(tot*pct/100);
- if(v.disk_breakdown){const b=v.disk_breakdown;document.getElementById('vDiskSub').textContent='· ใช้ '+v.disk_used_gb+' GB / ว่าง '+v.disk_free_gb+' GB';
-  donut('cDisk',b.map(x=>x[0]+' '+x[1]+' GB'),b.map(x=>x[1]),['#38bdf8',C.acc2,'#64748b',C.warn,C.ok,'#f472b6','#fb923c']);}
+ if(v.disk_breakdown){const b=v.disk_breakdown;document.getElementById('vDiskSub').textContent='ใช้ '+v.disk_used_gb+' GB จาก '+v.disk_total_gb+' GB · ว่าง '+v.disk_free_gb+' GB · วัดอัตโนมัติทุก 30 นาที';
+  donut('cDisk',b.map(x=>x[0]),b.map(x=>x[1]),['#38bdf8',C.acc2,'#64748b',C.warn,C.ok,'#f472b6','#fb923c'],{center:v.disk_used_gb+' GB',sub:'ใช้งาน',fmt:x=>x+' GB'});}
  else donut('cDisk',['ใช้แล้ว '+used+' GB','ว่าง '+(tot-used)+' GB'],[used,tot-used],[C.acc2,'#1b2747']);
  {const g={};(v.services||[]).forEach(x=>{(g[x[1]]=g[x[1]]||[]).push(x[0])});const ks=Object.keys(g);
-  const pal=[C.acc2,C.ok,C.warn,'#38bdf8','#f472b6','#a78bfa','#34d399','#fb923c','#94a3b8'];
-  document.getElementById('vContSub').textContent='· Container ทำงาน '+ct.running+'/'+ct.total;
-  if(has()){charts.cCont&&charts.cCont.destroy();charts.cCont=new Chart(document.getElementById('cCont'),{type:'doughnut',
-   data:{labels:ks.map(k=>k+' ('+g[k].length+'): '+g[k].join(', ')),datasets:[{data:ks.map(k=>g[k].length),backgroundColor:ks.map((k,i)=>pal[i%pal.length]),borderColor:'#121a2f',borderWidth:3}]},
-   options:{maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:8,font:{size:11}}},
-    tooltip:{callbacks:{label:c=>' '+g[ks[c.dataIndex]].join(', ')}}}}});}}
+  document.getElementById('vContSub').textContent='Container ทำงาน '+ct.running+'/'+ct.total+' · แบ่งตามประเภทโปรแกรม';
+  donut('cCont',ks,ks.map(k=>g[k].length),[C.acc2,C.ok,C.warn,'#38bdf8','#f472b6','#a78bfa','#fb923c'],{sub:'โปรแกรม',det:ks.map(k=>g[k].join(', '))});}
  let k=v.kpi||{PASS:0,NEED_ACTION:0,FAIL:0};
  if(Array.isArray(s.departments)&&s.departments.length){k={PASS:0,NEED_ACTION:0,FAIL:0};s.departments.forEach(d=>k[d.status]=(k[d.status]||0)+1);}
  donut('cKpi',['PASS','NEED_ACTION','FAIL'],[k.PASS,k.NEED_ACTION,k.FAIL],[C.ok,C.warn,C.bad]);
