@@ -36,7 +36,11 @@ facts = {'containers': f'{run}/{tot}', 'down': down, 'restore': restore, 'disk_p
          'recent_ai_orders': sh('tail -c 1500 ' + LOG + '/ai_orders.md 2>/dev/null')}
 # ---- AI (Gemini) ----
 key = ''
-for l in sh('docker exec open-notebook env').splitlines():
+try:
+    for l in open(H + '/.env', encoding='utf-8'):
+        if l.startswith('GEMINI_API_KEY='): key = l.split('=', 1)[1].strip()
+except Exception: pass
+for l in ([] if key else sh('docker exec open-notebook env').splitlines()):
     if l.startswith('GEMINI_API_KEY='): key = l.split('=', 1)[1]
 ai = {'summary': '', 'highlights': [], 'next': ''}
 if key:
@@ -50,7 +54,7 @@ if key:
         req = urllib.request.Request('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + key, data=body, headers={'Content-Type': 'application/json'})
         r = json.load(urllib.request.urlopen(req, timeout=90))
         ai.update(json.loads(r['candidates'][0]['content']['parts'][0]['text']))
-    except Exception as e: ai['summary'] = 'AI ไม่ตอบในรอบนี้'
+    except Exception as e: ai['summary'] = 'AI ไม่ตอบในรอบนี้ (' + type(e).__name__ + ')'
 ai = {'summary': clean(ai.get('summary', ''))[:400], 'highlights': [clean(x)[:160] for x in (ai.get('highlights') or [])][:4], 'next': clean(ai.get('next', ''))[:200]}
 now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=7)))
 os.makedirs(D, exist_ok=True)
