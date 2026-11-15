@@ -1,0 +1,3 @@
+{"updated_at":"2026-11-14T16:00:00+07:00","disk_total_gb":1000,"disk_used_pct":5,
+"services":[["n8n","Automation",true],["MT5 #1 (ราคา)","Trading",true],["MT5 #2 AI_Hybrid_EA","Trading",true],["MT5 #3 Telegram_EA","Trading",true],["Open Notebook","AI",true],["SurrealDB","Database",true],["Karakeep","Bookmarks",true],["Browserless","Automation",true],["File Browser","Storage",true],["Coolify","Deploy",true]],
+"containers":{"running":17,"total":17},"kpi":{"PASS":4,"NEED_ACTION":16,"FAIL":0}}

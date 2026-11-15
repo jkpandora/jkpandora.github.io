@@ -12,9 +12,27 @@
 .dl{display:inline-block;margin:10px 8px 0 0;padding:6px 14px;border-radius:99px;background:var(--acc);color:#04201b;text-decoration:none;font-weight:600;font-size:13px}
 .dl.alt{background:transparent;color:var(--acc);border:1px solid var(--acc)}
 </style>
+<style>
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tab{background:var(--panel);color:var(--mut);border:1px solid var(--line);border-radius:12px;padding:10px 16px;font-family:inherit;font-size:15px;cursor:pointer}
+.tab.on{color:var(--ink);border-color:var(--acc);box-shadow:0 0 0 1px rgba(94,234,212,.25) inset}
+.dpane{display:none}.dpane.on{display:block}
+.kpis{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-bottom:14px}
+.kpis .card p{margin:0 0 4px}.kpis .stat{font-size:30px}
+.charts{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-bottom:14px}
+.charts.two{grid-template-columns:2fr 1fr}@media(max-width:800px){.charts.two{grid-template-columns:1fr}}
+.cw{position:relative;height:230px}.cw.wide{height:260px}
+.svc{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));margin-top:8px}
+.svc div{display:flex;justify-content:space-between;align-items:center;background:#0e1528;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:14px}
+.svc small{color:var(--mut)}.dot{width:9px;height:9px;border-radius:50%;background:var(--ok);display:inline-block;margin-right:6px}.dot.off{background:var(--bad)}
+.tbl{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}.tbl th,.tbl td{padding:8px;border-bottom:1px solid var(--line);text-align:right}.tbl th{color:var(--mut);font-weight:500}.tbl td:first-child,.tbl th:first-child{text-align:left}
+.pos{color:var(--ok)}.neg{color:var(--bad)}
+.li{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}.li span{font-size:20px}.li a{color:var(--ink);text-decoration:none}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
-<nav><div class="in"><b>JK Pandora</b><a href="#projects">ผลงาน</a><a href="#programs">โปรแกรม</a><a href="#about">เกี่ยวกับ</a><a href="#stack">เครื่องมือ</a></div></nav>
+<nav><div class="in"><b>JK Pandora</b><a href="#dashboard">Dashboard</a><a href="#projects">ผลงาน</a><a href="#programs">โปรแกรม</a><a href="#about">เกี่ยวกับ</a><a href="#stack">เครื่องมือ</a></div></nav>
 
 <header><div class="wrap">
 <span class="pill live">● AI Course Showcase</span><span class="pill">jkpandora.github.io</span>
@@ -27,6 +45,56 @@
 <div class="card"><div class="stat">20</div><p>แผนก AI ใน Aetox Harness</p></div>
 </div>
 </div></header>
+
+<section id="dashboard"><div class="wrap">
+<h2>Dashboard</h2><p class="sub" id="dSub">ภาพรวม 3 ระบบ · VPS · Trade · ผลงาน</p>
+<div class="tabs" id="dTabs"><button class="tab on" data-t="vps">🖥️ ระบบ VPS</button><button class="tab" data-t="trade">📈 ระบบ Trade</button><button class="tab" data-t="works">🧩 ระบบผลงาน</button></div>
+
+<div class="dpane on" id="p-vps">
+ <div class="kpis">
+  <div class="card"><p>Container ทำงาน</p><div class="stat" id="vCont">–</div></div>
+  <div class="card"><p>พื้นที่ใช้ไป</p><div class="stat" id="vDisk">–</div></div>
+  <div class="card"><p>ทดสอบกู้คืน Backup</p><div class="stat" id="vRestore">–</div></div>
+  <div class="card"><p>อายุ Backup ล่าสุด</p><div class="stat" id="vBak">–</div></div>
+ </div>
+ <div class="charts">
+  <div class="card"><h3>พื้นที่จัดเก็บ (1 TB)</h3><div class="cw"><canvas id="cDisk"></canvas></div></div>
+  <div class="card"><h3>สถานะ Container</h3><div class="cw"><canvas id="cCont"></canvas></div></div>
+  <div class="card"><h3>KPI ทีม AI 20 แผนก</h3><div class="cw"><canvas id="cKpi"></canvas></div></div>
+ </div>
+ <div class="card"><h3>บริการที่ใช้งานบน VPS</h3><div id="vSvc" class="svc"></div></div>
+ <p class="sub" style="margin-top:12px"><a href="./projects/aetox-vps/">ดูรายละเอียด Aetox VPS Ops →</a></p>
+</div>
+
+<div class="dpane" id="p-trade">
+ <div class="kpis">
+  <div class="card"><p>กำไรสุทธิ</p><div class="stat" id="tNet">–</div></div>
+  <div class="card"><p>Win rate</p><div class="stat" id="tWr">–</div></div>
+  <div class="card"><p>Profit Factor</p><div class="stat" id="tPf">–</div></div>
+  <div class="card"><p>ชนะ / แพ้ (ไม้)</p><div class="stat" id="tWl">–</div></div>
+ </div>
+ <div class="charts two">
+  <div class="card"><h3>กำไรสะสม (USD): ตามสัญญาณ vs กลับทิศ</h3><div class="cw wide"><canvas id="cEq"></canvas></div></div>
+  <div class="card"><h3>สัดส่วนออเดอร์</h3><div class="cw"><canvas id="cOrd"></canvas></div></div>
+ </div>
+ <div class="card"><h3>สรุปตามประเภทคำสั่ง</h3><div style="overflow-x:auto"><table class="tbl" id="tType"></table></div></div>
+ <p class="sub" id="tNote" style="margin-top:12px"></p>
+</div>
+
+<div class="dpane" id="p-works">
+ <div class="kpis">
+  <div class="card"><p>ระบบที่ใช้งานจริง</p><div class="stat" id="wLive">–</div></div>
+  <div class="card"><p>กำลังพัฒนา</p><div class="stat" id="wSoon">–</div></div>
+  <div class="card"><p>โปรแกรมทั้งหมด</p><div class="stat" id="wProg">–</div></div>
+  <div class="card"><p>workflow n8n</p><div class="stat" id="wN8n">–</div></div>
+ </div>
+ <div class="charts two">
+  <div class="card"><h3>ผลงานแยกตามหมวด</h3><div class="cw"><canvas id="cCat"></canvas></div></div>
+  <div class="card"><h3>ผลงานล่าสุด</h3><div id="wLatest"></div></div>
+ </div>
+</div>
+</div></section>
+
 
 <section id="projects"><div class="wrap">
 <h2>ผลงาน</h2><p class="sub">คลิกที่การ์ดเพื่อดูรายละเอียดของแต่ละระบบ</p>
@@ -86,6 +154,66 @@ fetch('./assets/works.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.jso
  if(!Array.isArray(w)||!w.length)return;const have=new Set(G.map(x=>x.name));
  w.filter(x=>!have.has(x.name)).reverse().forEach(x=>G.unshift(x));
  document.getElementById('nProg').textContent=G.filter(x=>!x.example).length;drawProg();}).catch(()=>{});
+
+// ===== Dashboard =====
+(function(){
+const C={acc:'#5eead4',acc2:'#818cf8',ok:'#34d399',warn:'#fbbf24',bad:'#f87171',mut:'#8b9bc4',line:'#22304f',ink:'#e6ecff'};
+const has=()=>typeof Chart!=='undefined';
+if(has()){Chart.defaults.color=C.mut;Chart.defaults.font.family="'IBM Plex Sans Thai',sans-serif";Chart.defaults.borderColor=C.line;}
+const charts={};
+function donut(id,labels,data,colors){if(!has())return;charts[id]&&charts[id].destroy();
+ charts[id]=new Chart(document.getElementById(id),{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors,borderColor:'#121a2f',borderWidth:3}]},
+ options:{maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:12}}}}});}
+const J=u=>fetch(u+'?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);
+const set=(id,v,cls)=>{const e=document.getElementById(id);if(e){e.textContent=v;if(cls)e.className='stat '+cls;}};
+const th=d=>new Date(d).toLocaleString('th-TH',{timeZone:'Asia/Bangkok',dateStyle:'medium',timeStyle:'short'});
+// tabs
+document.getElementById('dTabs').addEventListener('click',e=>{const t=e.target.closest('.tab');if(!t)return;
+ document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b===t));
+ document.querySelectorAll('.dpane').forEach(p=>p.classList.toggle('on',p.id==='p-'+t.dataset.t));
+ Object.values(charts).forEach(c=>c.resize());});
+// VPS
+Promise.all([J('./data/vps.json'),J('./projects/aetox-vps/data/status.json')]).then(([v,s])=>{
+ v=v||{};s=s||{};
+ const ct=s.containers||v.containers||{running:0,total:0};
+ const pct=s.disk_pct!=null?s.disk_pct:(v.disk_used_pct||0);const tot=v.disk_total_gb||1000;
+ set('vCont',ct.running+'/'+ct.total,ct.running===ct.total?'pos':'neg');
+ set('vDisk',pct+'%');set('vRestore',s.restore_test||'–',s.restore_test==='PASS'?'pos':'neg');
+ set('vBak',s.backup_age_h!=null?s.backup_age_h+' ชม.':'–');
+ const used=Math.round(tot*pct/100);
+ donut('cDisk',['ใช้แล้ว '+used+' GB','ว่าง '+(tot-used)+' GB'],[used,tot-used],[C.acc2,'#1b2747']);
+ donut('cCont',['ทำงาน','หยุด/มีปัญหา'],[ct.running,ct.total-ct.running],[C.ok,C.bad]);
+ let k=v.kpi||{PASS:0,NEED_ACTION:0,FAIL:0};
+ if(Array.isArray(s.departments)&&s.departments.length){k={PASS:0,NEED_ACTION:0,FAIL:0};s.departments.forEach(d=>k[d.status]=(k[d.status]||0)+1);}
+ donut('cKpi',['PASS','NEED_ACTION','FAIL'],[k.PASS,k.NEED_ACTION,k.FAIL],[C.ok,C.warn,C.bad]);
+ document.getElementById('vSvc').innerHTML=(v.services||[]).map(x=>`<div><span><i class="dot ${x[2]?'':'off'}"></i>${x[0]}</span><small>${x[1]}</small></div>`).join('');
+ const u=s.updated_at||v.updated_at;if(u)document.getElementById('dSub').textContent='ภาพรวม 3 ระบบ · อัปเดต VPS ล่าสุด '+th(u);
+});
+// Trade
+J('./data/trade.json').then(t=>{if(!t)return;
+ set('tNet',(t.net>=0?'+$':'-$')+Math.abs(t.net).toFixed(2),t.net>=0?'pos':'neg');
+ set('tWr',t.winrate+'%');set('tPf',t.pf);set('tWl',t.wins+' / '+t.losses);
+ donut('cOrd',['ชนะ','แพ้','ไม่ถูกเกี่ยว','รอผล'],[t.wins,t.losses,t.invalid,t.pending],[C.acc2,C.bad,C.warn,C.ok]);
+ if(has()){charts.cEq=new Chart(document.getElementById('cEq'),{type:'line',data:{labels:t.equity.map(e=>e[0]),datasets:[
+  {label:'ตามสัญญาณ',data:t.equity.map(e=>e[1]),borderColor:C.acc2,backgroundColor:'rgba(129,140,248,.15)',fill:true,tension:.3,pointRadius:3},
+  {label:'กลับทิศ (Mirror)',data:t.equity.map(e=>e[2]),borderColor:C.bad,tension:.3,pointRadius:3}]},
+  options:{maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom'}},scales:{y:{ticks:{callback:v=>'$'+v}}}}});}
+ document.getElementById('tType').innerHTML='<tr><th>ประเภท</th><th>ส่งแล้ว</th><th>ชนะ</th><th>แพ้</th><th>กำไร $</th></tr>'+
+  t.by_type.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td class="${r[4]>0?'pos':r[4]<0?'neg':''}">${r[4].toFixed(2)}</td></tr>`).join('');
+ document.getElementById('tNote').textContent='⚠️ '+t.account+' · ตัวอย่างยังน้อย ('+(t.wins+t.losses)+' ไม้) ยังสรุปผลไม่ได้ · ข้อมูลจาก '+t.source+' · อัปเดต '+th(t.updated_at);
+});
+// Works
+setTimeout(()=>{const P=window.PROJECTS||[],G=(window.PROGRAMS||[]).filter(x=>!x.example);
+ Promise.all([J('./works/works.json'),J('./assets/works.json')]).then(([a,b])=>{
+  const extra=[...(a||[]),...(b||[])].filter(x=>x&&x.name&&!G.some(g=>g.name===x.name)).map(x=>({icon:x.icon||'🧩',name:x.name,cat:x.cat||'ส่งผ่าน n8n',demo:(x.url||x.demo||'').replace('https://jkpandora.github.io/','')}));
+  const all=[...extra,...G];
+  set('wLive',P.filter(x=>x.status==='live').length);set('wSoon',P.filter(x=>x.status!=='live').length);
+  set('wProg',all.length);set('wN8n',all.filter(x=>/n8n/.test(x.cat)).length);
+  const cats={};all.forEach(x=>cats[x.cat]=(cats[x.cat]||0)+1);
+  donut('cCat',Object.keys(cats),Object.values(cats),[C.acc,C.acc2,C.warn,C.ok,C.bad,'#c084fc','#60a5fa','#f472b6']);
+  document.getElementById('wLatest').innerHTML=all.slice(0,6).map(x=>`<div class="li"><span>${x.icon}</span><a href="./${x.demo||'#programs'}">${x.name}</a></div>`).join('');
+ });},0);
+})();
 </script>
 </body>
 </html>
