@@ -1,5 +1,12 @@
 [
  {
+  "t": "2026-11-16T22:39+07:00",
+  "mode": "live",
+  "containers": "17/17",
+  "issues": 0,
+  "summary": "AI ไม่ตอบในรอบนี้ (HTTPError)"
+ },
+ {
   "t": "2026-11-16T22:09+07:00",
   "mode": "live",
   "containers": "17/17",
@@ -198,13 +205,6 @@
  {
   "t": "2026-11-16T08:18+07:00",
   "mode": "daily",
-  "containers": "17/17",
-  "issues": 0,
-  "summary": "AI ไม่ตอบในรอบนี้ (HTTPError)"
- },
- {
-  "t": "2026-11-16T08:09+07:00",
-  "mode": "live",
   "containers": "17/17",
   "issues": 0,
   "summary": "AI ไม่ตอบในรอบนี้ (HTTPError)"
