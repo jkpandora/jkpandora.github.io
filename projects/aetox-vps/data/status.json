@@ -1,12 +1,12 @@
 {
- "updated_at": "2026-11-19T08:18:24+07:00",
+ "updated_at": "2026-11-19T08:39:03+07:00",
  "containers": {
-  "running": 19,
-  "total": 19
+  "running": 20,
+  "total": 20
  },
  "restore_test": "PASS",
- "disk_pct": 5,
- "backup_age_h": 23,
+ "disk_pct": 6,
+ "backup_age_h": 24,
  "issues": [],
  "departments": [
   {
