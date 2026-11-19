@@ -1,8 +1,8 @@
 {
- "updated_at": "2026-11-19T15:30:39+07:00",
+ "updated_at": "2026-11-19T16:00:39+07:00",
  "containers": {
   "running": 18,
-  "total": 21
+  "total": 22
  },
  "restore_test": "PASS",
  "disk_pct": 7,
