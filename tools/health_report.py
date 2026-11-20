@@ -39,7 +39,7 @@ load = sh("cut -d' ' -f1 /proc/loadavg"); cpus = sh('nproc') or '1'
 (ok if float(load or 0) < float(cpus) * 1.5 else warn).append(f"CPU load: {load} ({cpus} cores)")
 
 # 3) Endpoints
-for name, url, good in [('n8n', 'https://n8n.169.58.247.45.sslip.io/healthz', '200'),
+for name, url, good in [('n8n', 'http://127.0.0.1:5678/healthz', '200'),
                         ('เว็บ jkpandora.github.io', 'https://jkpandora.github.io/', '200')]:
     code = sh(f"curl -s -o /dev/null -m 15 -w '%{{http_code}}' {url}")
     (ok if code == good else bad).append(f"{name}: HTTP {code or 'timeout'}")
