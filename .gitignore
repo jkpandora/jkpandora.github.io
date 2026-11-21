@@ -13,3 +13,5 @@ id_ed25519*
 tools/
 README.md
 AI_SUBMIT.md
+
+n8n/*.json
