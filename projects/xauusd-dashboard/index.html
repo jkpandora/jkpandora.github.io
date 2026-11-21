@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>XAUUSD ข่าวทองรายวัน · JK Pandora</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/theme.css">
+<style>
+.day{margin-bottom:16px}
+.day h3{margin:0 0 6px}
+.day .meta{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+ul.pt{margin:8px 0 0;padding-left:20px;color:var(--mut)}ul.pt li{margin:4px 0}
+.cal{font-size:13px;color:var(--mut);margin-top:10px}
+.dis{font-size:12px;color:var(--mut);margin-top:16px}
+</style>
+</head>
+<body>
+<nav><div class="in"><a href="../../" style="color:var(--acc)">← JK Pandora</a><b>XAUUSD</b><a href="#latest">ล่าสุด</a><a href="#history">ย้อนหลังรายวัน</a></div></nav>
+<header><div class="wrap">
+<span class="pill live">● อัปเดตอัตโนมัติ</span><span class="pill" id="updated">กำลังโหลด…</span>
+<h1>ข่าวทอง<br><span>XAUUSD รายวัน</span></h1>
+<p class="sub">สรุปข่าวและมุมมองทองคำประจำวัน เรียงตามวัน ระบบ Aetox VPS Ops ดึงจากสรุปเช้าของ AI แล้วอัปเดตหน้านี้เอง</p>
+</div></header>
+<section id="latest"><div class="wrap"><h2>ล่าสุด</h2><div id="latestBox"><div class="card"><p>กำลังโหลด…</p></div></div></div></section>
+<section id="history"><div class="wrap"><h2>ย้อนหลังรายวัน</h2><div id="hist"></div>
+<p class="dis">เนื้อหาเป็นข้อมูลประกอบการศึกษา ไม่ใช่คำแนะนำการลงทุน การเทรดมีความเสี่ยง</p></div></section>
+<footer><div class="wrap">JK Pandora · หน้านี้อัปเดตอัตโนมัติโดย Aetox VPS Ops</div></footer>
+<script>
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined&&x!==null&&x!=='')e.textContent=x;return e}
+function card(d){
+  var c=el('div','card day');
+  c.appendChild(el('h3','',d.date+(d.headline?' · '+d.headline:'')));
+  var m=el('div','meta');
+  if(d.price)m.appendChild(el('span','pill','ราคา '+d.price));
+  if(d.change)m.appendChild(el('span','pill',d.change));
+  if(d.bias)m.appendChild(el('span','pill','มุมมอง: '+d.bias));
+  if(m.childNodes.length)c.appendChild(m);
+  if((d.points||[]).length){var u=el('ul','pt');d.points.forEach(function(p){u.appendChild(el('li','',p))});c.appendChild(u)}
+  if((d.calendar||[]).length)c.appendChild(el('div','cal','📅 '+d.calendar.join(' · ')));
+  return c}
+fetch('data/news.json?'+Date.now()).then(function(r){return r.json()}).then(function(d){
+  var t=d.updated_at?new Date(d.updated_at):null;
+  $('updated').textContent=t&&!isNaN(t)?'อัปเดต '+t.toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'}):'รอข้อมูลรอบแรก';
+  var days=(d.days||[]).slice().sort(function(a,b){return a.date<b.date?1:-1});
+  var L=document.getElementById('latestBox'),H=document.getElementById('hist');L.textContent='';H.textContent='';
+  if(!days.length){L.appendChild(el('div','card','รอข้อมูลรอบแรก'));return}
+  L.appendChild(card(days[0]));
+  days.slice(1).forEach(function(x){H.appendChild(card(x))});
+  if(days.length<2)H.appendChild(el('p','dis','ประวัติจะสะสมเพิ่มวันละหนึ่งรายการ'));
+}).catch(function(){document.getElementById('updated').textContent='ยังไม่มีข้อมูล'});
+function $(i){return document.getElementById(i)}
+</script>
+</body>
+</html>
