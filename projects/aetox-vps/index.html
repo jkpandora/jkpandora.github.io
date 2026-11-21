@@ -53,7 +53,7 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:13px;border-top:1px solid 
 </style>
 </head>
 <body>
-<nav><div class="in"><a href="../../" style="color:var(--acc)">← JK Pandora</a><b>Aetox VPS Ops</b><a href="#ai">AI วิเคราะห์</a><a href="#overview">ภาพรวม</a><a href="#flow">การทำงาน</a><a href="#n8n">n8n Supervisor</a><a href="#kpi">20 แผนก</a><a href="#incidents">บันทึกปัญหา</a><a href="#security">ความปลอดภัย</a><a href="#files">ไฟล์และคำสั่ง</a><a href="#lessons">บทเรียน</a><a href="#roadmap">แผนต่อไป</a><a href="#github">GitHub Pages</a></div></nav>
+<nav><div class="in"><a href="../../" style="color:var(--acc)">← JK Pandora</a><b>Aetox VPS Ops</b><a href="#ai">AI วิเคราะห์</a><a href="#goldnews">ข่าวทอง</a><a href="#overview">ภาพรวม</a><a href="#flow">การทำงาน</a><a href="#n8n">n8n Supervisor</a><a href="#kpi">20 แผนก</a><a href="#incidents">บันทึกปัญหา</a><a href="#security">ความปลอดภัย</a><a href="#files">ไฟล์และคำสั่ง</a><a href="#lessons">บทเรียน</a><a href="#roadmap">แผนต่อไป</a><a href="#github">GitHub Pages</a></div></nav>
 
 <header><div class="wrap">
 <span class="pill live" id="livePill">● ใช้งานจริง</span><span class="pill" id="updated">กำลังโหลดสถานะ…</span><span class="pill">Contabo VPS 1TB</span><span class="pill">Ubuntu 24.04</span><span class="pill">เริ่ม พ.ย. 2026</span>
@@ -78,6 +78,16 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:13px;border-top:1px solid 
 </div>
 <h3 style="margin-top:26px">ประวัติการวิเคราะห์</h3>
 <div id="hist"><p class="sub">ยังไม่มีประวัติ</p></div>
+</div></section>
+
+<section id="goldnews"><div class="wrap">
+<h2>📰 ข่าวทองประจำวัน (อัตโนมัติ)</h2>
+<p class="sub">ทำงานทุกวัน: ระบบจะรันเองอัตโนมัติทุกเช้า โดยที่ไม่ต้องสั่งใหม่ ไฟล์ forex-brief-วันที่.md ถูกบันทึกลง Google Drive (โฟลเดอร์ Documents/Forex-Brief) ประมาณ 05:30 น. แล้ว Aetox ดึงมาแสดงที่นี่ทุกเช้า <span id="gnUpd"></span></p>
+<div class="grid">
+<div class="card" style="border-color:var(--acc2)"><h3 id="gnHead">กำลังโหลด…</h3><div id="gnMeta" style="display:flex;flex-wrap:wrap;gap:8px;margin:8px 0"></div><ul id="gnPts" style="margin:0;padding-left:18px;color:var(--mut);font-size:14.5px"></ul></div>
+<div class="card"><h3>📅 ปฏิทินที่ต้องจับตา</h3><ul id="gnCal" style="margin:0;padding-left:18px;color:var(--mut);font-size:14.5px"><li>–</li></ul><p style="margin-top:12px"><a href="../xauusd-dashboard/" style="color:var(--acc)">ดูย้อนหลังรายวัน →</a></p></div>
+</div>
+<p class="sub" style="margin-top:12px;font-size:12px">ข้อมูลประกอบการศึกษา ไม่ใช่คำแนะนำการลงทุน</p>
 </div></section>
 
 <section id="overview"><div class="wrap">
@@ -307,6 +317,20 @@ async function loadHist(){try{const r=await fetch('./data/history.json?t='+Date.
 if(h.length)document.getElementById('hist').innerHTML=h.slice(0,10).map(x=>`<details><summary>${new Date(x.t).toLocaleString('th-TH',{timeZone:'Asia/Bangkok'})} ${x.mode==='daily'?'· 📅 รายงานประจำวัน':''} · container ${x.containers} · ปัญหา ${x.issues}</summary><p>${(x.summary||'').replace(/</g,'&lt;')}</p></details>`).join('');}catch(e){}}
 loadHist(); setInterval(loadHist,60000);
 
+</script>
+<script>
+(function(){
+  function li(t){var e=document.createElement('li');e.textContent=t;return e}
+  fetch('../xauusd-dashboard/data/news.json?'+Date.now()).then(function(r){return r.json()}).then(function(d){
+    var x=(d.days||[])[0]; if(!x){document.getElementById('gnHead').textContent='รอข้อมูลรอบแรก';return}
+    document.getElementById('gnHead').textContent=x.date+' · '+(x.headline||'');
+    var m=document.getElementById('gnMeta');m.textContent='';
+    [x.price&&'ราคา '+x.price,x.change,x.bias].filter(Boolean).forEach(function(t){var p=document.createElement('span');p.className='pill';p.textContent=t;m.appendChild(p)});
+    var u=document.getElementById('gnPts');u.textContent='';(x.points||[]).forEach(function(t){u.appendChild(li(t))});
+    var c=document.getElementById('gnCal');c.textContent='';(x.calendar||[]).forEach(function(t){c.appendChild(li(t))});if(!c.childNodes.length)c.appendChild(li('–'));
+    var t=d.updated_at?new Date(d.updated_at):null;if(t&&!isNaN(t))document.getElementById('gnUpd').textContent='(อัปเดตล่าสุด '+t.toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'})+')';
+  }).catch(function(){document.getElementById('gnHead').textContent='ยังไม่มีข้อมูล'});
+})();
 </script>
 </body>
 </html>
