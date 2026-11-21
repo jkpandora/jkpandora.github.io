@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JK Pandora LINE Bot · JK Pandora</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/theme.css">
+<style>
+.bars{display:flex;gap:10px;align-items:flex-end;height:140px;margin-top:10px}
+.bars div{flex:1;text-align:center;font-size:12px;color:var(--mut)}
+.bars i{display:block;background:linear-gradient(180deg,var(--acc),var(--acc2));border-radius:6px 6px 0 0;min-height:3px;margin-bottom:4px}
+.bars b{display:block;color:var(--ink);font-size:13px}
+.chips .pill{margin:0 8px 8px 0}
+ul.hl{margin:0;padding-left:20px;color:var(--mut)}ul.hl li{margin:4px 0}
+</style>
+</head>
+<body>
+<nav><div class="in"><a href="../../" style="color:var(--acc)">← JK Pandora</a><b>LINE Bot</b><a href="#stats">ตัวเลขล่าสุด</a><a href="#can">ทำอะไรได้</a><a href="#menu">เมนู</a><a href="#ai">สรุปจาก AI</a></div></nav>
+<header><div class="wrap">
+<span class="pill live" id="livePill">● ใช้งานจริง</span><span class="pill" id="updated">กำลังโหลดสถานะ…</span>
+<h1>JK Pandora<br><span>LINE Bot</span></h1>
+<p class="sub">แชทบอตส่วนตัวใน LINE และ Telegram ที่ถามเรื่อง VPS ระบบเทรด ข่าวทอง และเว็บไซต์ได้ในภาษาธรรมชาติ ตัวเลขและสรุปในหน้านี้ถูกส่งมาให้ทีม Aetox VPS Ops อัปเดตเองอัตโนมัติ</p>
+</div></header>
+<section id="stats"><div class="wrap">
+<h2>ตัวเลขล่าสุด</h2><p class="sub">นับรวมเท่านั้น ไม่เก็บและไม่แสดงข้อความหรือผู้ใช้</p>
+<div class="grid">
+<div class="card"><div class="stat" id="sRuns">–</div><p>ครั้งที่บอตประมวลผลใน 7 วัน</p></div>
+<div class="card"><div class="stat" id="sOk">–</div><p>ทำงานสำเร็จ</p></div>
+<div class="card"><div class="stat" id="sCmd">–</div><p>คำสั่งสำหรับดูแลระบบ</p></div>
+<div class="card"><div class="stat" id="sBtn">–</div><p>ปุ่มในเมนู LINE</p></div>
+<div class="card"><div class="stat" id="sSvc">–</div><p>บริการบอต</p></div>
+</div>
+<div class="card" style="margin-top:16px"><h3>การใช้งานรายวัน (7 วัน)</h3><div class="bars" id="bars"></div></div>
+</div></section>
+<section id="can"><div class="wrap">
+<h2>บอตทำอะไรได้</h2><p class="sub">ทุกอย่างเป็นแบบอ่านอย่างเดียวและตอบเฉพาะเจ้าของระบบ</p>
+<div class="grid">
+<div class="card"><h3>💬 ถามเป็นภาษาไทย</h3><p>ถามเช่น "ระบบเทรดวันนี้เป็นอย่างไร" แล้วทีม AI ไปหาข้อมูลมาตอบ</p></div>
+<div class="card"><h3>📰 ข่าวและวิเคราะห์ทอง</h3><p>สรุปข่าวและมุมมอง XAUUSD ประจำวันจากไฟล์ที่ AI อัปเดตทุกเช้า</p></div>
+<div class="card"><h3>🖥️ ดูแล VPS</h3><p>ดูสถานะ container, log, พื้นที่ดิสก์ และรายงานปัญหาจากปุ่มเมนู</p></div>
+<div class="card"><h3>📈 สรุปผลเทรด</h3><p>สรุปสัญญาณและผลเทรดจากบันทึกของระบบ ไม่เปิดคำสั่งซื้อขายให้เอง</p></div>
+<div class="card"><h3>📲 LINE + Telegram</h3><p>ใช้ตัวช่วยชุดเดียวกันทั้งสองแอป เลือกเมนูหรือพิมพ์ถามได้เลย</p></div>
+</div>
+</div></section>
+<section id="menu"><div class="wrap">
+<h2>ปุ่มในเมนู LINE</h2><p class="sub">ดึงรายชื่อปุ่มจริงจากเมนูที่ใช้งานอยู่</p>
+<div class="chips" id="chips"><span class="pill">กำลังโหลด…</span></div>
+</div></section>
+<section id="ai"><div class="wrap">
+<h2>สรุปจาก AI</h2><p class="sub">Gemini เขียนสรุปจากตัวเลขจริงของระบบ (อัปเดตทุกไม่เกิน 6 ชั่วโมง)</p>
+<div class="card"><p id="aiSum" style="color:var(--ink)">รอข้อมูลรอบแรก</p><ul class="hl" id="aiHl"></ul><p id="aiNext" style="margin-top:10px"></p></div>
+</div></section>
+<footer><div class="wrap">JK Pandora · หน้านี้อัปเดตอัตโนมัติโดย Aetox VPS Ops</div></footer>
+<script>
+function $(i){return document.getElementById(i)}
+function set(i,v){var e=$(i);if(e)e.textContent=v}
+fetch('data/status.json?'+Date.now()).then(function(r){return r.json()}).then(function(d){
+  var t=d.updated_at?new Date(d.updated_at):null;
+  set('updated',t&&!isNaN(t)?'อัปเดต '+t.toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'}):'รอข้อมูลรอบแรก');
+  var has=function(v){return v!==null&&v!==undefined};
+  set('sRuns',has(d.runs_7d)?d.runs_7d.toLocaleString():'–');
+  set('sOk',has(d.runs_7d)&&d.runs_7d>0?Math.round(100*d.ok_7d/d.runs_7d)+'%':'–');
+  set('sCmd',has(d.commands)?d.commands:'–');
+  set('sBtn',(d.menu||[]).length||'–');
+  var s=d.services||{},keys=Object.keys(s),up=keys.filter(function(k){return s[k]}).length;
+  set('sSvc',keys.length?up+'/'+keys.length:'–');
+  var dl=d.daily||[],mx=Math.max.apply(null,dl.map(function(x){return x.n}).concat([1])),b=$('bars');b.textContent='';
+  dl.forEach(function(x){var c=document.createElement('div'),i=document.createElement('i'),n=document.createElement('b');
+    i.style.height=Math.round(100*x.n/mx)+'px';n.textContent=x.n;c.appendChild(i);c.appendChild(n);c.appendChild(document.createTextNode(x.d));b.appendChild(c)});
+  var ch=$('chips');ch.textContent='';(d.menu||[]).forEach(function(m){var p=document.createElement('span');p.className='pill';p.textContent=m;ch.appendChild(p)});
+  if(!(d.menu||[]).length){var p=document.createElement('span');p.className='pill';p.textContent='รอข้อมูลรอบแรก';ch.appendChild(p)}
+  var a=d.ai||{};set('aiSum',a.summary||'รอข้อมูลรอบแรก');
+  var ul=$('aiHl');ul.textContent='';(a.highlights||[]).forEach(function(h){var li=document.createElement('li');li.textContent=h;ul.appendChild(li)});
+  set('aiNext',a.next?'ต่อไป: '+a.next:'');
+}).catch(function(){set('updated','ยังไม่มีข้อมูลสถานะ')});
+</script>
+</body>
+</html>

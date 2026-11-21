@@ -3,7 +3,7 @@
 window.PROJECTS = [
   { icon:"🖥️", name:"Aetox VPS Ops", desc:"ดูแล VPS ด้วยทีม AI 20 แผนก + n8n AI Supervisor (Gemini) แจ้งเตือนผ่าน Telegram", path:"projects/aetox-vps/", tags:["AI Agent","n8n","Docker","VPS"], status:"live" },
   { icon:"📈", name:"XAUUSD Dashboard", desc:"แดชบอร์ดผล MT5 / Gold EA", path:"projects/xauusd-dashboard/", tags:["MT5","n8n","Trading"], status:"soon" },
-  { icon:"💬", name:"JK Pandora LINE Bot", desc:"แชทบอต LINE ตอบคำถามอัตโนมัติด้วย Claude API", path:"projects/line-bot/", tags:["Claude API","LINE"], status:"soon" },
+  { icon:"💬", name:"JK Pandora LINE Bot", desc:"แชทบอต LINE + Telegram ตอบคำถามเรื่อง VPS ระบบเทรด และข่าวทอง ด้วยทีม AI", path:"projects/line-bot/", tags:["AI Agent","LINE","Telegram"], status:"live" },
   { icon:"📘", name:"AI Ebook", desc:"แผนอีบุ๊ก AI และ AI Agent เปรียบเทียบ Claude กับ Gemini วางโครงไว้ 8 บท ทำเป็นซีรีส์", path:"projects/ai-ebook/", tags:["Ebook","Claude","Gemini"], status:"live" },
   { icon:"⚙️", name:"n8n Automation", desc:"workflow อัตโนมัติบน n8n: AI Supervisor ดูแล VPS และ AI อัปผลงานขึ้นเว็บ", path:"n8n/", tags:["n8n","Gemini","Telegram"], status:"live" }
 ];
