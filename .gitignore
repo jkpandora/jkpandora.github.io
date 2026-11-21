@@ -8,3 +8,8 @@ __pycache__/
 id_rsa*
 id_ed25519*
 *.sqlite
+
+# ไฟล์ภายใน เก็บบน VPS เท่านั้น ไม่เผยแพร่
+tools/
+README.md
+AI_SUBMIT.md
