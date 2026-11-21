@@ -78,6 +78,8 @@ footer{padding:30px 0 60px;color:var(--mut);font-size:13px;border-top:1px solid 
 </div>
 <h3 style="margin-top:26px">ประวัติการวิเคราะห์</h3>
 <div id="hist"><p class="sub">ยังไม่มีประวัติ</p></div>
+<h3 style="margin-top:26px">ย้อนหลังรายวัน</h3>
+<div id="histDays"><p class="sub">ยังไม่มีข้อมูลรายวัน</p></div>
 </div></section>
 
 <section id="goldnews"><div class="wrap">
@@ -316,6 +318,9 @@ loadStatus(); setInterval(loadStatus,60000);
 async function loadHist(){try{const r=await fetch('./data/history.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const h=await r.json();
 if(h.length)document.getElementById('hist').innerHTML=h.slice(0,10).map(x=>`<details><summary>${new Date(x.t).toLocaleString('th-TH',{timeZone:'Asia/Bangkok'})} ${x.mode==='daily'?'· 📅 รายงานประจำวัน':''} · container ${x.containers} · ปัญหา ${x.issues}</summary><p>${(x.summary||'').replace(/</g,'&lt;')}</p></details>`).join('');}catch(e){}}
 loadHist(); setInterval(loadHist,60000);
+async function loadDays(){try{const r=await fetch('./data/ai-daily/index.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const d=await r.json();const box=document.getElementById('histDays');if(!d.days||!d.days.length)return;box.textContent='';d.days.forEach(function(x){const det=document.createElement('details');const s=document.createElement('summary');s.textContent=new Date(x.date+'T00:00:00+07:00').toLocaleDateString('th-TH',{timeZone:'Asia/Bangkok',day:'numeric',month:'long',year:'numeric'})+' · วิเคราะห์สำเร็จ '+x.ok+'/'+x.runs+' รอบ · ปัญหาสูงสุด '+x.issues_max;det.appendChild(s);const p=document.createElement('p');p.textContent=x.last||'วันนี้ AI ยังไม่ตอบสำเร็จ';det.appendChild(p);let loaded=false;det.addEventListener('toggle',async function(){if(!det.open||loaded)return;loaded=true;try{const rr=await fetch('./data/ai-daily/'+x.date+'.json?t='+Date.now());const L=await rr.json();L.filter(function(e){return (e.summary||'').indexOf('AI ไม่ตอบ')<0}).forEach(function(e){const q=document.createElement('p');q.textContent=new Date(e.t).toLocaleTimeString('th-TH',{timeZone:'Asia/Bangkok',hour:'2-digit',minute:'2-digit'})+' · '+e.summary;det.appendChild(q)})}catch(_){}});box.appendChild(det)})}catch(e){}}
+loadDays();setInterval(loadDays,300000);
+
 
 </script>
 <script>
