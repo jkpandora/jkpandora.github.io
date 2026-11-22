@@ -1,0 +1,60 @@
+{
+  "updated": "2026-11-23T05:35:00+07:00",
+  "entries": [
+    {
+      "date": "2026-11-23T05:17:00+07:00",
+      "topic": "Telegram",
+      "title": "ปรับกราฟิกเมนู AI และคำสั่ง /ai",
+      "work": "สร้างภาพเมนู neon ใหม่ให้มี 6 tile เดิมและ AI เป็น tile ที่ 7 เต็มแถวที่ 3; เปลี่ยน /ai ให้ส่งภาพ AI เดี่ยว 800x800 พร้อมปุ่ม 🤖 AI",
+      "files": ["tg_ops_ai.py", "richmenu_v2.jpg", "ai_tile.png"],
+      "backup": "สำรอง service, script, รูปเดิม และ cache รูปก่อน restart",
+      "test": "tg-ops active; log หลัง restart ไม่มี error; ส่ง /menu และ /ai ไปยัง JKth01 สำเร็จ",
+      "rollback": "คืน ExecStart ไปยัง tg_ops.py; คืน script/รูป/cache เดิม แล้ว daemon-reload และ restart tg-ops",
+      "status": "แก้แล้ว"
+    },
+    {
+      "date": "2026-11-23T05:23:00+07:00",
+      "topic": "LINE",
+      "title": "Rich Menu และ workflow AI v2",
+      "work": "สร้าง Rich Menu ใหม่และเก็บเมนูเดิมไว้; นำเข้า workflow AI v2 แบบ inactive แล้วทดสอบการสลับใช้งาน",
+      "files": ["richmenu_ai_v2.jpg", "richmenu_ai_v2.py", "JK_Pandora_LINE_AI_v2.json"],
+      "backup": "สำรองรายการ Rich Menu, default เดิม และ workflow เดิม",
+      "test": "Rich Menu ใหม่อัปโหลดได้ แต่ webhook ตอบ HTTP 404 จึงไม่ผ่านเกณฑ์",
+      "rollback": "ตั้ง Rich Menu เดิมเป็น default; ปิด AI v2; เปิด v5 เดิม; restart n8n",
+      "status": "แก้แล้ว (rollback สำเร็จ; AI v2 ยังไม่เปิดใช้งาน)"
+    },
+    {
+      "date": "2026-11-23T05:23:00+07:00",
+      "topic": "n8n",
+      "title": "ตรวจสอบการ activate workflow",
+      "work": "ตรวจ active state หลัง rollback และตรวจ container n8n",
+      "files": ["workflow v5 เดิม", "workflow AI v2"],
+      "backup": "มี export workflow เดิมและไฟล์ v2 แยก",
+      "test": "v5 active; AI v2 inactive; n8n container running",
+      "rollback": "เปิด v5 และปิด AI v2 ด้วยคำสั่ง workflow update แล้ว restart n8n",
+      "status": "แก้แล้ว"
+    },
+    {
+      "date": "2026-11-23T05:17:00+07:00",
+      "topic": "VPS",
+      "title": "ตรวจบริการหน้าจอและเครือข่าย",
+      "work": "ตรวจบริการ VNC และสถานะหน้าเว็บโดยไม่เปลี่ยนค่า firewall หรือเครือข่าย",
+      "files": ["ไม่มีการแก้ไฟล์ระบบเครือข่าย"],
+      "backup": "ไม่จำเป็น; เป็นการตรวจแบบอ่านอย่างเดียว",
+      "test": "บริการหน้าจอทำงาน; endpoint ตอบ HTTP 200; firewall ยังจำกัดตามการตั้งค่าเดิม",
+      "rollback": "ไม่มีการเปลี่ยนแปลง จึงไม่มี rollback",
+      "status": "แก้แล้ว"
+    },
+    {
+      "date": "2026-11-23T05:35:00+07:00",
+      "topic": "Security",
+      "title": "กฎความปลอดภัยของงาน AI menu",
+      "work": "ไม่บันทึก token, credential, รหัส VNC, IP ภายใน, URL ภายใน หรือ path เครื่องลงหน้าเว็บสาธารณะ",
+      "files": ["aetox-log/index.html", "aetox-log/log.json"],
+      "backup": "สำรองไฟล์เว็บก่อนแก้",
+      "test": "ตรวจเนื้อหา public log ด้วย grep รูปแบบ secret และข้อมูลภายใน",
+      "rollback": "คืนไฟล์เว็บจาก backup directory ของงานนี้",
+      "status": "แก้แล้ว"
+    }
+  ]
+}
