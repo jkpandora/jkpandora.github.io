@@ -1,5 +1,12 @@
 [
  {
+  "t": "2026-11-23T20:02+07:00",
+  "mode": "live",
+  "containers": "17/22",
+  "issues": 0,
+  "summary": "AI ไม่ตอบในรอบนี้ (TimeoutError)"
+ },
+ {
   "t": "2026-11-23T19:31+07:00",
   "mode": "live",
   "containers": "17/22",
