@@ -1,12 +1,12 @@
 {
- "updated_at": "2026-11-24T22:02:08+07:00",
+ "updated_at": "2026-11-24T22:31:01+07:00",
  "containers": {
   "running": 17,
   "total": 22
  },
  "restore_test": "PASS",
  "disk_pct": 10,
- "backup_age_h": 13,
+ "backup_age_h": 14,
  "issues": [],
  "departments": [
   {
@@ -131,7 +131,7 @@
   }
  ],
  "ai": {
-  "summary": "AI ไม่ตอบในรอบนี้ (TimeoutError)",
+  "summary": "AI ไม่ตอบในรอบนี้ (HTTPError)",
   "highlights": [],
   "next": ""
  }
