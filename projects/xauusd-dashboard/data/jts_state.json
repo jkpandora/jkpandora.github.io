@@ -2,20 +2,20 @@
   "source": "JTS",
   "symbol": "GOLD#",
   "timeframe": "M15",
-  "side": "SELL",
+  "side": "WAIT",
   "trend": "DOWN",
-  "bar_close_utc": "2026-11-24T00:00:00Z",
+  "bar_close_utc": "2026-11-24T00:30:00Z",
   "bar_age_min": 1.2,
   "stale": false,
-  "price": 3631.68,
+  "price": 3645.44,
   "entry": 3627.7,
   "sl": 3640.94,
   "tp1": 3614.46,
   "tp2": 3601.22,
   "tp3": 3587.98,
-  "remain": 1.0,
-  "realized_r": 0.0,
-  "ema200": 3630.6,
+  "remain": 0.0,
+  "realized_r": -1.0,
+  "ema200": 3630.8,
   "events_this_bar": {
     "buy": 0,
     "sell": 0,
@@ -23,8 +23,8 @@
     "tp1": 0,
     "tp2": 0,
     "tp3": 0,
-    "sl": 0
+    "sl": 1
   },
   "note": "entry/sl/tp are valid only while side is BUY or SELL; WAIT means no open JTS trade",
-  "updated_at": "2026-11-24T00:01:10Z"
+  "updated_at": "2026-11-24T00:31:13Z"
 }
