@@ -5,7 +5,7 @@
   "side": "WAIT",
   "trend": "UP",
   "bar_close_utc": "2026-11-26T19:15:00Z",
-  "bar_age_min": 46.2,
+  "bar_age_min": 106.2,
   "stale": true,
   "price": 3567.14,
   "entry": 3578.97,
@@ -26,5 +26,5 @@
     "sl": 0
   },
   "note": "entry/sl/tp are valid only while side is BUY or SELL; WAIT means no open JTS trade",
-  "updated_at": "2026-11-26T20:01:10Z"
+  "updated_at": "2026-11-26T21:01:14Z"
 }
