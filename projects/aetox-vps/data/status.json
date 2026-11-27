@@ -1,8 +1,8 @@
 {
- "updated_at": "2026-11-27T11:30:47+07:00",
+ "updated_at": "2026-11-27T12:00:49+07:00",
  "containers": {
   "running": 17,
-  "total": 22
+  "total": 17
  },
  "restore_test": "PASS",
  "disk_pct": 12,
@@ -13,130 +13,130 @@
    "no": 1,
    "name": "receptionist",
    "status": "NEED_ACTION",
-   "note": "Routing accuracy ≥98%; no routing sample was available."
+   "note": "ไม่มี sample การ route ในรอบนี้"
   },
   {
    "no": 2,
    "name": "assistant",
-   "status": "PASS",
-   "note": "This requested startup summary was delivered to Telegram; this confirms this briefing only, not ongoing 100% timeliness."
+   "status": "NEED_ACTION",
+   "note": "`daily_audit_0500.sh` + crontab สร้างวันนี้ 11:45, รัน manual 11:48 (log มีแค่ START), ยังไม่มีหลักฐานส่ง Telegram เวลา "
   },
   {
    "no": 3,
    "name": "head-manager",
    "status": "NEED_ACTION",
-   "note": "Average case closure ≤5 min; no case-timing history was available."
+   "note": "ไม่มีประวัติเวลาเปิด-ปิดเคส"
   },
   {
    "no": 4,
    "name": "executive",
    "status": "NEED_ACTION",
-   "note": "Post-approval system stability ≥95%; no approved-change measurement window was available."
+   "note": "หน้าต่างวัดหลังอนุมัติแผนยังไม่มี"
   },
   {
    "no": 5,
    "name": "hr-manager",
    "status": "NEED_ACTION",
-   "note": "Reduce recurring errors ≥80%; no baseline or post-adjustment sample was available."
+   "note": "ไม่มี baseline error ซ้ำ"
   },
   {
    "no": 6,
    "name": "internal-audit",
    "status": "NEED_ACTION",
-   "note": "Weekly audit completeness 100%; historical application, accounting, and backup records were not fully reconciled."
+   "note": "รายงานนี้เป็นชุดแรกตั้งแต่ 14 พ.ย. (audit_kpi.md เดิม 14 พ.ย.) ยังไม่กระทบยอดรายสัปดาห์"
   },
   {
    "no": 7,
    "name": "server-infra",
-   "status": "NEED_ACTION",
-   "note": "Uptime ≥99.9% and CPU/RAM ≤85%; memory and disk snapshot were within limits, but uptime history and CPU utilization were"
+   "status": "PASS",
+   "note": "RAM 26%, disk used 13%, ทุก container Up; load 7.0/6 vCPU เกินแนวทาง"
   },
   {
    "no": 8,
    "name": "sys-admin",
    "status": "PASS",
-   "note": "All five requested application endpoints responded in under one second; three MT5 containers were running. Functional MT"
+   "note": "5 endpoint ตอบ <25ms, n8n healthz 200, MT5 3 ตัวออนไลน์"
   },
   {
    "no": 9,
    "name": "maintenance",
    "status": "NEED_ACTION",
-   "note": "PM on schedule 100%, MTTR ≤10 min; no PM history or timed recovery incident was verified."
+   "note": "`weekly_maintenance_safe.sh` สำเร็จ 25 พ.ย. 19:43, `aetox-portable-update` ติดตั้ง v1.11.39 27 พ.ย. 00:00; ไม่มีบันทึก M"
   },
   {
    "no": 10,
    "name": "dba-admin",
    "status": "NEED_ACTION",
-   "note": "Query <100ms and zero DB corruption; no query-latency or integrity checks were run."
+   "note": "`database.sqlite` 896M + WAL 9.8M, integrity ผ่านเฉพาะฝั่ง backup, n8n Insights ZodError 265 ครั้ง/24ชม., ไม่มีหลักฐาน v"
   },
   {
    "no": 11,
    "name": "backup-dr",
-   "status": "NEED_ACTION",
-   "note": "Daily backup success 100%; restore log has three failures followed by a pass, but daily completion is unverified."
+   "status": "FAIL",
+   "note": "SQLite PASS แต่ SurrealDB ไฟล์ซ้ำ 14 วัน = backup เชิงข้อมูลล้มเหลว"
   },
   {
    "no": 12,
    "name": "security-ops",
-   "status": "NEED_ACTION",
-   "note": "[hidden] leaks = 0; `.env` is mode `0600` and ignore rules protect [hidden] patterns, but no full repository [hidden] sc"
+   "status": "PASS",
+   "note": "UFW DROP + DOCKER-USER จำกัด 80/443 + fail2ban 2 jail + .env 600; ยังไม่ได้ scan [hidden] ทั้ง repo"
   },
   {
    "no": 13,
    "name": "cleaner-cat",
-   "status": "PASS",
-   "note": "Free SSD ≥30%; 95.9% was free and all four required library directories exist."
+   "status": "NEED_ACTION",
+   "note": "disk ว่าง 87% ผ่าน แต่ `/data/n8n` 19G (backup 16 ชุด + `database.sqlite.backup_20261122.corrupt` 896M), images reclaima"
   },
   {
    "no": 14,
    "name": "operations",
    "status": "NEED_ACTION",
-   "note": "Workflow continuity ≥99.5%; no n8n execution history or queue metrics were inspected."
+   "note": "10:52–11:02 webhook `get-signal` ไม่ลงทะเบียน 14 ครั้ง + `Workflow activation failed validation` 3 ครั้ง, ปัจจุบัน 200; "
   },
   {
    "no": 15,
    "name": "watchdog",
    "status": "PASS",
-   "note": "One-minute cron schedule and execution, script syntax, and Telegram test alert were verified. No controlled outage/resta"
+   "note": "cron ทุก 1 นาที, heartbeat ต่อเนื่องถึง 11:50, `issues=0`, alert_sent 11:38, state file ว่าง"
   },
   {
    "no": 16,
    "name": "quant-ops",
    "status": "NEED_ACTION",
-   "note": "Signals 100%, order errors 0%; three MT5 containers were running, but signals/orders were not audited. No live trading p"
+   "note": "`webhook/get-signal` 200 → `ID: none / Action: WAIT`; `get-signal-b` 200; EA loaded 10:36 (mt5-3) / 11:04 (mt5-2); ไม่ได"
   },
   {
    "no": 17,
    "name": "deepresearch",
    "status": "NEED_ACTION",
-   "note": "First-pass issue resolution ≥90%; no incident sample was available."
+   "note": "ไม่มี incident sample"
   },
   {
    "no": 18,
    "name": "doc-control",
-   "status": "NEED_ACTION",
-   "note": "Backup/publishing coverage 100%; GitHub `main` is reachable, but this checkout has no remote and backup completeness was"
+   "status": "PASS",
+   "note": "HEAD = origin/main `718363a`, site 200; แต่ `pushed:false` และ rebase error ใน log ย่อย"
   },
   {
    "no": 19,
    "name": "accounting",
    "status": "NEED_ACTION",
-   "note": "Zero calculation variance; VPS/API costs and net P&L were not available."
+   "note": "ไม่มีข้อมูลต้นทุน/P&L ในรอบนี้"
   },
   {
    "no": 20,
    "name": "qa-100",
    "status": "NEED_ACTION",
-   "note": "Zero escaped defects; multiple KPI evidence sets remain unverified, so 100% sign-off is not justified."
+   "note": "ยังมี FAIL 1 + NEED_ACTION 14 จึงยังไม่ให้ sign-off 100%"
   }
  ],
  "ai": {
-  "summary": "ระบบ Aetox VPS Ops ทำงานได้ราบรื่นในภาพรวม โดยมีคอนเทนเนอร์รันอยู่ 17 จาก 22 ตัว และใช้พื้นที่ดิสก์ไปเพียง 12% เท่านั้นครับ",
+  "summary": "ระบบ Aetox VPS Ops ออนไลน์ครบทั้ง 17 คอนเทนเนอร์ พร้อมทรัพยากรเครื่องและระบบเฝ้าระวังที่ทำงานได้ตามปกติ โดยยังมีบางส่วนที่ต้องปรับปรุงเรื่องการสำรองข้อมูลและการเก็บหลักฐานเพิ่มเติมครับ",
   "highlights": [
-   "การทดสอบฟื้นฟูข้อมูล (Restore) ผ่านเรียบร้อย พร้อมสำรองข้อมูลล่าสุดเมื่อ 9 ชั่วโมงที่แล้ว",
-   "ระบบเฝ้าระวัง (Watchdog) และแอปพลิเคชันหลักตอบสนองรวดเร็วต่ำกว่า 1 วินาที",
-   "พื้นที่ดิสก์อยู่ในระดับปลอดภัยสูงมาก มีพื้นที่ว่างเหลือมากกว่า 80%"
+   "บริการหลักและคอนเทนเนอร์ทั้งหมด 17/17 ทำงานปกติ ตอบสนองไวต่ำกว่า 25 มิลลิวินาที และเทรดดิ้งบอทเชื่อมต่อครบ",
+   "ระบบรักษาความปลอดภัยและตัวเฝ้าระวังทำงานต่อเนื่องตลอดเวลา ไม่มีปัญหาค้าง และผ่านการทดสอบกู้คืนข้อมูลหลักแล้ว",
+   "ทรัพยากรระบบยังมีพื้นที่เหลือเฟือ ใช้หน่วยความจำเพียง 26% และใช้พื้นที่ดิสก์ไปเพียง 12%"
   ],
-  "next": "ควรตรวจสอบและจัดการคอนเทนเนอร์ n8n จำนวน 5 ตัวที่หยุดทำงานเพื่อคืนทรัพยากรให้ระบบครับ"
+  "next": "ควรเร่งแก้ไขปัญหาการสำรองข้อมูลบางส่วนที่ยังซ้ำซ้อน พร้อมเคลียร์ไฟล์สำรองเก่าและเก็บหลักฐาน KPI ให้ครบถ้วนครับ"
  }
 }
