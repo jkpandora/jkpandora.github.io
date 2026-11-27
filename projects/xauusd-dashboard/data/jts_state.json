@@ -4,10 +4,10 @@
   "timeframe": "M15",
   "side": "SELL",
   "trend": "DOWN",
-  "bar_close_utc": "2026-11-27T14:30:00Z",
-  "bar_age_min": 1.4,
+  "bar_close_utc": "2026-11-27T15:30:00Z",
+  "bar_age_min": 1.2,
   "stale": false,
-  "price": 3636.86,
+  "price": 3628.8,
   "entry": 3647.91,
   "sl": 3647.91,
   "tp1": 3635.2,
@@ -15,7 +15,7 @@
   "tp3": 3609.77,
   "remain": 0.7,
   "realized_r": 0.3,
-  "ema200": 3602.2,
+  "ema200": 3603.42,
   "events_this_bar": {
     "buy": 0,
     "sell": 0,
@@ -26,5 +26,5 @@
     "sl": 0
   },
   "note": "entry/sl/tp are valid only while side is BUY or SELL; WAIT means no open JTS trade",
-  "updated_at": "2026-11-27T14:31:24Z"
+  "updated_at": "2026-11-27T15:31:14Z"
 }
