@@ -1,12 +1,12 @@
 {
- "updated_at": "2026-11-28T05:00:42+07:00",
+ "updated_at": "2026-11-28T05:30:48+07:00",
  "containers": {
   "running": 19,
   "total": 19
  },
  "restore_test": "PASS",
  "disk_pct": 13,
- "backup_age_h": 2,
+ "backup_age_h": 3,
  "issues": [],
  "departments": [
   {
@@ -19,7 +19,7 @@
    "no": 2,
    "name": "assistant",
    "status": "NEED_ACTION",
-   "note": "`daily_audit_0500.sh` ตั้ง cron `0 * * * *` (สร้าง 11:45 วันนี้), log มีเฉพาะ START 11:48 + 11:58 และ `TG_SENT=\"ok\":true"
+   "note": "`daily_audit_0500.sh` cron `0 * * * *` ทำงาน 05:00:02 วันนี้ (รันอยู่ระหว่างตรวจ), รอบ 27 พ.ย. มี `TG_SENT=\"ok\":true`"
   },
   {
    "no": 3,
@@ -43,79 +43,79 @@
    "no": 6,
    "name": "internal-audit",
    "status": "PASS",
-   "note": "รายงานนี้เป็นชุดที่ 2 ของวัน (รอบ 11:49 + 12:00) มีหลักฐานคำสั่ง/ไฟล์ครบ, ไม่มี [hidden] ถูกอ่าน"
+   "note": "รายงานนี้มีหลักฐานคำสั่ง/ไฟล์/เวลา, เทียบรอบก่อนได้, ไม่มี [hidden] ถูกอ่านหรือบันทึก"
   },
   {
    "no": 7,
    "name": "server-infra",
    "status": "NEED_ACTION",
-   "note": "RAM 26%, disk used 13%, 17 containers Up; แต่ load 7.2→13.6 บน 6 vCPU (CPU pressure 68.5%) เกิน KPI ≤85%"
+   "note": "RAM 31%, disk 14%, 19 containers Up, failed units 0; แต่ load 11.49 บน 6 vCPU เกิน KPI"
   },
   {
    "no": 8,
    "name": "sys-admin",
    "status": "PASS",
-   "note": "n8n healthz 200 (3.3ms), ON web 5055 200, karakeep 3005 307, filebrowser 8081 200, 8502/8095 200 — ทุกตัว <0.5s"
+   "note": "n8n healthz 200, open-notebook 8502 = 200, filebrowser 8081 = 200, karakeep 3005 = 307, ops-api /health 200"
   },
   {
    "no": 9,
    "name": "maintenance",
    "status": "NEED_ACTION",
-   "note": "`weekly_maintenance_safe.sh` สำเร็จ 25 พ.ย. 19:43, อัปเดต Aetox portable v1.11.39 27 พ.ย. 00:00; ไม่มีบันทึก MTTR/CM ใน "
+   "note": "Aetox portable update 27 พ.ย. 23:32, weekly maintenance รอบ 25 พ.ย.; ไม่มีบันทึก MTTR/CM และ mt5-4/5 ไม่อยู่ใน PM scope"
   },
   {
    "no": 10,
    "name": "dba-admin",
    "status": "NEED_ACTION",
-   "note": "executions 10,441 แถว/2 วัน ไม่มี prune, DB 896M + WAL 9.8M, ZodError 162/24h, ไม่มีหลักฐาน vacuum"
+   "note": "`execution_entity` 10,779 แถว ไม่มี prune, DB 896M + WAL 9.8M, FK error 48 บรรทัด/24h, ไม่มีหลักฐาน vacuum"
   },
   {
    "no": 11,
    "name": "backup-dr",
    "status": "FAIL",
-   "note": "SQLite/tgz ผ่าน; SurrealDB เนื้อหาไม่เปลี่ยน 14 วัน + ไม่มี restore test"
+   "note": "SQLite/tgz ผ่าน; SurrealDB เนื้อหาไม่เปลี่ยน 10 วัน + ไม่มี restore test ในรอบเดือน"
   },
   {
    "no": 12,
    "name": "security-ops",
    "status": "NEED_ACTION",
-   "note": "UFW deny + fail2ban 2 jail + `.env` 600 ผ่าน; แต่ GitHub [hidden] ของ n8n-backup ใช้ไม่ได้ (403) และยังไม่มี [hidden] sc"
+   "note": "UFW deny + fail2ban 2 jail + `.env` 600 + Docker exposure ปิดครบ ผ่าน; แต่ [hidden] `n8n-backup` ใช้ไม่ได้ (403) และ doc"
   },
   {
    "no": 13,
    "name": "cleaner-cat",
-   "status": "NEED_ACTION",
-   "note": "พื้นที่ว่าง 87% ผ่าน; แต่ `/data/n8n` = 19G มี `after_240_failed.sqlite` 862M, `after_latest_failed.sqlite` 862M, `datab"
+   "status": "PASS",
+   "note": "พื้นที่ว่าง 86% (≥30%) ผ่าน; ค้าง `/data/n8n` `after_*_failed.sqlite` 862M×2 + `database.sqlite.backup_20261120` 896M แล"
   },
   {
    "no": 14,
    "name": "operations",
    "status": "NEED_ACTION",
-   "note": "get-signal 4,226 success/24h, get-signal-b 2,892 success/24h ต่อเนื่องทุก 30 วิ; Argon Bridge v7 error 27%, webhook หลุด"
+   "note": "execution 24h success 6,652 / error 10 = 99.85% (≥99.5%); แต่ webhook หลุด 15 ครั้ง + runner 19 ครั้ง"
   },
   {
    "no": 15,
    "name": "watchdog",
    "status": "NEED_ACTION",
-   "note": "cron ทุก 1 นาที heartbeat ถึง 11:59 `issues=0`; แต่ส่ง Telegram ไม่สำเร็จ (HTTP 502/000) → MTTD/alert KPI ยังพิสูจน์ไม่ไ"
+   "note": "cron ทุก 1 นาที heartbeat ถึง 05:01 `issues=0`; แต่ `/var/lib/mt5_ea_watchdog.json` ล่าสุด 01:15 (ค้าง 3h45m), ไม่ครอบ m"
   },
   {
    "no": 16,
    "name": "quant-ops",
    "status": "PASS",
-   "note": "ทั้ง 2 webhook ตอบ `Action: WAIT` (ไม่มีออเดอร์ค้าง), ไม่มีสัญญาณค้างส่ง, execution success ≥99.5%"
+   "note": "mt5-2/mt5-3 EA `status=OK` ทุก 5 นาที, ไม่พบ error 1003, ไม่มีออเดอร์ค้างผิดปกติ"
   },
   {
    "no": 17,
    "name": "deepresearch",
    "status": "NEED_ACTION",
-   "note": "ไม่มี incident sample ให้ตรวจ root cause ในรอบนี้"
+   "note": "ไม่มี log วิเคราะห์ root cause ของ FK error / runner expiry ในรอบนี้"
   },
   {
    "no": 18,
    "name": "doc-control",
    "status": "FAIL",
-   "note": "เว็บ Pages sync + 200 ผ่าน; แต่ n8n-backup ค้าง 2 คอมมิตและ push 403 → KPI \"ขึ้น GitHub ครบ 100%\" ไม่ผ่าน"
+   "note": "เว็บ Pages sync + 200 ผ่าน; แต่ `n8n-backup` ค้าง 3 คอมมิต + push 403 → KPI \"ขึ้น GitHub ครบ 100%\" ไม่ผ่าน"
   },
   {
    "no": 19,
@@ -127,16 +127,16 @@
    "no": 20,
    "name": "qa-100",
    "status": "NEED_ACTION",
-   "note": "ยังมี FAIL 2 + NEED_ACTION 15 → ไม่ให้ sign-off 100%"
+   "note": "ยังมี FAIL 2 + NEED_ACTION 14 → ไม่ให้ sign-off 100%"
   }
  ],
  "ai": {
-  "summary": "ระบบหลักออนไลน์ครบ 19/19 คอนเทนเนอร์ พร้อมพื้นที่ว่าง 87% และสำรองข้อมูลล่าสุดเมื่อ 2 ชั่วโมงที่ผ่านมา โดยยังมีบางจุดด้านภาระเครื่องและการซิงค์ข้อมูลที่ต้องดูแลเพิ่มเติม",
+  "summary": "ภาพรวมระบบ Aetox VPS Ops ทำงานได้ราบรื่นดี คอนเทนเนอร์ทั้ง 19 ตัวออนไลน์ครบและมีพื้นที่จัดเก็บเหลือเฟือ แต่ยังพบจุดที่ต้องดูแลเพิ่มเติมด้านโหลดระบบและการสำรองข้อมูลบางส่วน",
   "highlights": [
-   "บริการเว็บและระบบประมวลผลหลักตอบสนองรวดเร็วต่ำกว่า 0.5 วินาที ด้วยอัตราความสำเร็จกว่า 99.5%",
-   "ระบบความปลอดภัยพื้นฐานและการทดสอบกู้คืนข้อมูลเบื้องต้นผ่านเกณฑ์ ใช้ RAM เพียง 26% และดิสก์ 13%",
-   "ผ่านการตรวจสอบความเรียบร้อยภายในรอบล่าสุดครบถ้วน พร้อมระบบเฝ้าระวังทำงานต่อเนื่องทุกนาที"
+   "คอนเทนเนอร์ทั้ง 19/19 ตัวและบริการหลักออนไลน์ครบ ใช้พื้นที่ดิสก์เพียง 13% และ RAM 31%",
+   "ระบบอัตโนมัติทำงานสำเร็จถึง 99.85% จากกว่า 6,600 รายการ พร้อมระบบเทรดที่ทำงานปกติ",
+   "ไฟร์วอลล์และความปลอดภัยพื้นฐานทำงานครบถ้วน พร้อมข้อมูลสำรองล่าสุดเมื่อ 3 ชั่วโมงก่อน"
   ],
-  "next": "ควรเร่งตรวจสอบสาเหตุภาระ CPU สูง แก้ไขการแจ้งเตือนและการซิงค์ข้อมูลสำรอง รวมถึงจัดการฐานข้อมูลส่วนเกินเพื่อให้ระบบสมบูรณ์ครบทุกด้าน"
+  "next": "ควรเร่งตรวจสอบสาเหตุที่โหลดซีพียูสูง แก้ไขปัญหาการเชื่อมต่อคลังข้อมูลสำรอง และทดสอบการกู้คืนฐานข้อมูลให้ครบถ้วนครับ"
  }
 }
