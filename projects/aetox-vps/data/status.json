@@ -1,142 +1,143 @@
 {
- "updated_at": "2026-11-27T12:00:49+07:00",
+ "updated_at": "2026-11-27T12:30:54+07:00",
  "containers": {
   "running": 17,
   "total": 17
  },
  "restore_test": "PASS",
  "disk_pct": 12,
- "backup_age_h": 9,
+ "backup_age_h": 10,
  "issues": [],
  "departments": [
   {
    "no": 1,
    "name": "receptionist",
    "status": "NEED_ACTION",
-   "note": "ไม่มี sample การ route ในรอบนี้"
+   "note": "ไม่มี log การคัดกรอง/ส่งต่อในรอบนี้"
   },
   {
    "no": 2,
    "name": "assistant",
    "status": "NEED_ACTION",
-   "note": "`daily_audit_0500.sh` + crontab สร้างวันนี้ 11:45, รัน manual 11:48 (log มีแค่ START), ยังไม่มีหลักฐานส่ง Telegram เวลา "
+   "note": "`daily_audit_0500.sh` ตั้ง cron `0 * * * *` (สร้าง 11:45 วันนี้), log มีเฉพาะ START 11:48 + 11:58 และ `TG_SENT=\"ok\":true"
   },
   {
    "no": 3,
    "name": "head-manager",
    "status": "NEED_ACTION",
-   "note": "ไม่มีประวัติเวลาเปิด-ปิดเคส"
+   "note": "ไม่มีบันทึกเวลาเปิด–ปิดเคส"
   },
   {
    "no": 4,
    "name": "executive",
    "status": "NEED_ACTION",
-   "note": "หน้าต่างวัดหลังอนุมัติแผนยังไม่มี"
+   "note": "ยังไม่มีหน้าต่างวัดเสถียรภาพหลังอนุมัติแผน"
   },
   {
    "no": 5,
    "name": "hr-manager",
    "status": "NEED_ACTION",
-   "note": "ไม่มี baseline error ซ้ำ"
+   "note": "ไม่มี baseline error ซ้ำ/คะแนน KPI รายแผนก"
   },
   {
    "no": 6,
    "name": "internal-audit",
-   "status": "NEED_ACTION",
-   "note": "รายงานนี้เป็นชุดแรกตั้งแต่ 14 พ.ย. (audit_kpi.md เดิม 14 พ.ย.) ยังไม่กระทบยอดรายสัปดาห์"
+   "status": "PASS",
+   "note": "รายงานนี้เป็นชุดที่ 2 ของวัน (รอบ 11:49 + 12:00) มีหลักฐานคำสั่ง/ไฟล์ครบ, ไม่มี [hidden] ถูกอ่าน"
   },
   {
    "no": 7,
    "name": "server-infra",
-   "status": "PASS",
-   "note": "RAM 26%, disk used 13%, ทุก container Up; load 7.0/6 vCPU เกินแนวทาง"
+   "status": "NEED_ACTION",
+   "note": "RAM 26%, disk used 13%, 17 containers Up; แต่ load 7.2→13.6 บน 6 vCPU (CPU pressure 68.5%) เกิน KPI ≤85%"
   },
   {
    "no": 8,
    "name": "sys-admin",
    "status": "PASS",
-   "note": "5 endpoint ตอบ <25ms, n8n healthz 200, MT5 3 ตัวออนไลน์"
+   "note": "n8n healthz 200 (3.3ms), ON web 5055 200, karakeep 3005 307, filebrowser 8081 200, 8502/8095 200 — ทุกตัว <0.5s"
   },
   {
    "no": 9,
    "name": "maintenance",
    "status": "NEED_ACTION",
-   "note": "`weekly_maintenance_safe.sh` สำเร็จ 25 พ.ย. 19:43, `aetox-portable-update` ติดตั้ง v1.11.39 27 พ.ย. 00:00; ไม่มีบันทึก M"
+   "note": "`weekly_maintenance_safe.sh` สำเร็จ 25 พ.ย. 19:43, อัปเดต Aetox portable v1.11.39 27 พ.ย. 00:00; ไม่มีบันทึก MTTR/CM ใน "
   },
   {
    "no": 10,
    "name": "dba-admin",
    "status": "NEED_ACTION",
-   "note": "`database.sqlite` 896M + WAL 9.8M, integrity ผ่านเฉพาะฝั่ง backup, n8n Insights ZodError 265 ครั้ง/24ชม., ไม่มีหลักฐาน v"
+   "note": "executions 10,441 แถว/2 วัน ไม่มี prune, DB 896M + WAL 9.8M, ZodError 162/24h, ไม่มีหลักฐาน vacuum"
   },
   {
    "no": 11,
    "name": "backup-dr",
    "status": "FAIL",
-   "note": "SQLite PASS แต่ SurrealDB ไฟล์ซ้ำ 14 วัน = backup เชิงข้อมูลล้มเหลว"
+   "note": "SQLite/tgz ผ่าน; SurrealDB เนื้อหาไม่เปลี่ยน 14 วัน + ไม่มี restore test"
   },
   {
    "no": 12,
    "name": "security-ops",
-   "status": "PASS",
-   "note": "UFW DROP + DOCKER-USER จำกัด 80/443 + fail2ban 2 jail + .env 600; ยังไม่ได้ scan [hidden] ทั้ง repo"
+   "status": "NEED_ACTION",
+   "note": "UFW deny + fail2ban 2 jail + `.env` 600 ผ่าน; แต่ GitHub [hidden] ของ n8n-backup ใช้ไม่ได้ (403) และยังไม่มี [hidden] sc"
   },
   {
    "no": 13,
    "name": "cleaner-cat",
    "status": "NEED_ACTION",
-   "note": "disk ว่าง 87% ผ่าน แต่ `/data/n8n` 19G (backup 16 ชุด + `database.sqlite.backup_20261122.corrupt` 896M), images reclaima"
+   "note": "พื้นที่ว่าง 87% ผ่าน; แต่ `/data/n8n` = 19G มี `after_240_failed.sqlite` 862M, `after_latest_failed.sqlite` 862M, `datab"
   },
   {
    "no": 14,
    "name": "operations",
    "status": "NEED_ACTION",
-   "note": "10:52–11:02 webhook `get-signal` ไม่ลงทะเบียน 14 ครั้ง + `Workflow activation failed validation` 3 ครั้ง, ปัจจุบัน 200; "
+   "note": "get-signal 4,226 success/24h, get-signal-b 2,892 success/24h ต่อเนื่องทุก 30 วิ; Argon Bridge v7 error 27%, webhook หลุด"
   },
   {
    "no": 15,
    "name": "watchdog",
-   "status": "PASS",
-   "note": "cron ทุก 1 นาที, heartbeat ต่อเนื่องถึง 11:50, `issues=0`, alert_sent 11:38, state file ว่าง"
+   "status": "NEED_ACTION",
+   "note": "cron ทุก 1 นาที heartbeat ถึง 11:59 `issues=0`; แต่ส่ง Telegram ไม่สำเร็จ (HTTP 502/000) → MTTD/alert KPI ยังพิสูจน์ไม่ไ"
   },
   {
    "no": 16,
    "name": "quant-ops",
-   "status": "NEED_ACTION",
-   "note": "`webhook/get-signal` 200 → `ID: none / Action: WAIT`; `get-signal-b` 200; EA loaded 10:36 (mt5-3) / 11:04 (mt5-2); ไม่ได"
+   "status": "PASS",
+   "note": "ทั้ง 2 webhook ตอบ `Action: WAIT` (ไม่มีออเดอร์ค้าง), ไม่มีสัญญาณค้างส่ง, execution success ≥99.5%"
   },
   {
    "no": 17,
    "name": "deepresearch",
    "status": "NEED_ACTION",
-   "note": "ไม่มี incident sample"
+   "note": "ไม่มี incident sample ให้ตรวจ root cause ในรอบนี้"
   },
   {
    "no": 18,
    "name": "doc-control",
-   "status": "PASS",
-   "note": "HEAD = origin/main `718363a`, site 200; แต่ `pushed:false` และ rebase error ใน log ย่อย"
+   "status": "FAIL",
+   "note": "เว็บ Pages sync + 200 ผ่าน; แต่ n8n-backup ค้าง 2 คอมมิตและ push 403 → KPI \"ขึ้น GitHub ครบ 100%\" ไม่ผ่าน"
   },
   {
    "no": 19,
    "name": "accounting",
    "status": "NEED_ACTION",
-   "note": "ไม่มีข้อมูลต้นทุน/P&L ในรอบนี้"
+   "note": "ไม่มีข้อมูลต้นทุน VPS/API หรือ P&L ในรอบนี้"
   },
   {
    "no": 20,
    "name": "qa-100",
    "status": "NEED_ACTION",
-   "note": "ยังมี FAIL 1 + NEED_ACTION 14 จึงยังไม่ให้ sign-off 100%"
+   "note": "ยังมี FAIL 2 + NEED_ACTION 15 → ไม่ให้ sign-off 100%"
   }
  ],
  "ai": {
-  "summary": "ระบบ Aetox VPS Ops ออนไลน์ครบทั้ง 17 คอนเทนเนอร์ พร้อมทรัพยากรเครื่องและระบบเฝ้าระวังที่ทำงานได้ตามปกติ โดยยังมีบางส่วนที่ต้องปรับปรุงเรื่องการสำรองข้อมูลและการเก็บหลักฐานเพิ่มเติมครับ",
+  "summary": "ระบบหลักของ Aetox VPS Ops ออนไลน์ครบทั้ง 17 คอนเทนเนอร์และให้บริการเว็บได้รวดเร็วตามปกติ แต่ยังพบภาระ CPU ที่ค่อนข้างสูง รวมถึงงานสำรองข้อมูลและการแจ้งเตือนบางส่วนที่ต้องปรับปรุงเพิ่มเติมครับ",
   "highlights": [
-   "บริการหลักและคอนเทนเนอร์ทั้งหมด 17/17 ทำงานปกติ ตอบสนองไวต่ำกว่า 25 มิลลิวินาที และเทรดดิ้งบอทเชื่อมต่อครบ",
-   "ระบบรักษาความปลอดภัยและตัวเฝ้าระวังทำงานต่อเนื่องตลอดเวลา ไม่มีปัญหาค้าง และผ่านการทดสอบกู้คืนข้อมูลหลักแล้ว",
-   "ทรัพยากรระบบยังมีพื้นที่เหลือเฟือ ใช้หน่วยความจำเพียง 26% และใช้พื้นที่ดิสก์ไปเพียง 12%"
+   "คอนเทนเนอร์ทั้งหมด 17/17 ตัวทำงานปกติ พร้อมบริการเว็บที่ตอบสนองรวดเร็วต่ำกว่า 0.5 วินาที",
+   "ระบบ Quant Ops และระบบรับส่งสัญญาณหลักทำงานต่อเนื่องด้วยอัตราความสำเร็จสูงกว่า 99.5% และไม่มีคำสั่งค้าง",
+   "พื้นที่ดิสก์ใช้งานไปเพียง 12% และหน่วยความจำ 26% พร้อมระบบป้องกันความปลอดภัยพื้นฐานที่ทำงานครบถ้วน",
+   "การตรวจสอบระบบภายในและการทดสอบความพร้อมข้อมูลสำรองชุดล่าสุด (อายุ 10 ชั่วโมง) ผ่านเกณฑ์เบื้องต้น"
   ],
-  "next": "ควรเร่งแก้ไขปัญหาการสำรองข้อมูลบางส่วนที่ยังซ้ำซ้อน พร้อมเคลียร์ไฟล์สำรองเก่าและเก็บหลักฐาน KPI ให้ครบถ้วนครับ"
+  "next": "ขั้นตอนถัดไปควรเร่งแก้ไขสิทธิ์การซิงก์ข้อมูลสำรอง ทดสอบการกู้คืนฐานข้อมูลให้ครบถ้วน พร้อมปรับลดภาระ CPU และแก้ไขระบบแจ้งเตือนที่ขัดข้องครับ"
  }
 }
